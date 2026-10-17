@@ -186,7 +186,7 @@ export function DeviceList({
           <button
             type="button"
             onClick={onRetry}
-            className="mt-4 text-sm font-medium text-signal underline-offset-4 hover:underline"
+            className="mt-4 text-sm font-medium text-foreground underline underline-offset-4 hover:decoration-2"
           >
             Reintentar
           </button>

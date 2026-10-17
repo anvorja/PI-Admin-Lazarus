@@ -51,7 +51,7 @@ export function ServicePanel({ devices }: ServicePanelProps) {
         <button
           type="button"
           onClick={() => void settings.refetch()}
-          className="text-sm font-medium text-signal underline-offset-4 hover:underline"
+          className="text-sm font-medium text-foreground underline underline-offset-4 hover:decoration-2"
         >
           Reintentar
         </button>
