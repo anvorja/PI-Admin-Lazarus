@@ -91,9 +91,17 @@ export function DeviceRow({
         <span className="text-xs text-muted-foreground">
           Visto {formatRelative(device.last_seen_at)}
         </span>
-        <span className="tabular font-mono text-xs text-muted-foreground md:hidden">
-          {formatMinutes(device.minutes_today)} hoy
-          {ping !== null ? `, ping ${formatSeconds(ping)}` : ""}
+        <span className="text-xs text-muted-foreground md:hidden">
+          <span className="tabular font-mono">
+            {formatMinutes(device.minutes_today)}
+          </span>{" "}
+          hoy
+          {ping !== null ? (
+            <>
+              , ping{" "}
+              <span className="tabular font-mono">{formatSeconds(ping)}</span>
+            </>
+          ) : null}
         </span>
       </div>
 
