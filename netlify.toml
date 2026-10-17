@@ -1,0 +1,16 @@
+# Panel del piloto de Lazarus en Netlify. Variables del sitio: BACKEND_URL
+# (https del backend en Render). El proxy de /api/* lo escribe el build.
+[build]
+  command = "pnpm build && node scripts/write-redirects.mjs"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "same-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

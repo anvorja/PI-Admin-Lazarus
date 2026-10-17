@@ -1,20 +1,31 @@
-import { Button } from "@/components/ui/button"
+import { RouterProvider } from "@tanstack/react-router"
+import { useEffect } from "react"
 
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { useAuth } from "@/hooks/useAuth"
+import { router } from "@/router"
+
+/** Monta el router cuando ya se sabe si hay sesión (sin parpadeo del ingreso). */
 export function App() {
-  return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+  const auth = useAuth()
+
+  useEffect(() => {
+    if (auth.status !== "checking") void router.invalidate()
+  }, [auth.status])
+
+  if (auth.status === "checking") {
+    return (
+      <div className="grid min-h-dvh place-items-center" aria-busy="true">
+        <span className="size-10 animate-pulse rounded-full border border-signal/50 bg-signal-soft" />
+        <span className="sr-only">Comprobando la sesión…</span>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <TooltipProvider>
+      <RouterProvider router={router} context={{ auth }} />
+    </TooltipProvider>
   )
 }
 
