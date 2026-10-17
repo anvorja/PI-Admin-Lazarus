@@ -209,7 +209,7 @@ export function DeviceList({
           </p>
         </div>
       ) : (
-        <ul className="flex flex-col gap-1.5">
+        <ul className="@container flex flex-col gap-1.5">
           {visible.map((device) => (
             <DeviceRow
               key={device.id}
