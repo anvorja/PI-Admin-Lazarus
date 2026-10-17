@@ -1,0 +1,904 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T19:53:37+00:00",
+  "title": "Design System: Lazarus, consola del piloto",
+  "extensions": {
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "Niebla",
+        "canonical": "oklch(0.972 0.006 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.006 250)",
+          "oklch(0.26 0.006 250)",
+          "oklch(0.37 0.006 250)",
+          "oklch(0.48 0.006 250)",
+          "oklch(0.59 0.006 250)",
+          "oklch(0.70 0.006 250)",
+          "oklch(0.82 0.006 250)",
+          "oklch(0.95 0.006 250)"
+        ]
+      },
+      "background-dark": {
+        "role": "neutral",
+        "displayName": "Tinta nocturna",
+        "canonical": "oklch(0.155 0.026 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.026 258)",
+          "oklch(0.26 0.026 258)",
+          "oklch(0.37 0.026 258)",
+          "oklch(0.48 0.026 258)",
+          "oklch(0.59 0.026 258)",
+          "oklch(0.70 0.026 258)",
+          "oklch(0.82 0.026 258)",
+          "oklch(0.95 0.026 258)"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "oklch(0.22 0.032 262)",
+        "tonalRamp": [
+          "oklch(0.15 0.032 262)",
+          "oklch(0.26 0.032 262)",
+          "oklch(0.37 0.032 262)",
+          "oklch(0.48 0.032 262)",
+          "oklch(0.59 0.032 262)",
+          "oklch(0.70 0.032 262)",
+          "oklch(0.82 0.032 262)",
+          "oklch(0.95 0.032 262)"
+        ]
+      },
+      "foreground-dark": {
+        "role": "neutral",
+        "displayName": "Tinta invertida",
+        "canonical": "oklch(0.955 0.008 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 250)",
+          "oklch(0.26 0.008 250)",
+          "oklch(0.37 0.008 250)",
+          "oklch(0.48 0.008 250)",
+          "oklch(0.59 0.008 250)",
+          "oklch(0.70 0.008 250)",
+          "oklch(0.82 0.008 250)",
+          "oklch(0.95 0.008 250)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Superficie",
+        "canonical": "oklch(0.995 0.002 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.002 250)",
+          "oklch(0.26 0.002 250)",
+          "oklch(0.37 0.002 250)",
+          "oklch(0.48 0.002 250)",
+          "oklch(0.59 0.002 250)",
+          "oklch(0.70 0.002 250)",
+          "oklch(0.82 0.002 250)",
+          "oklch(0.95 0.002 250)"
+        ]
+      },
+      "card-dark": {
+        "role": "neutral",
+        "displayName": "Superficie nocturna",
+        "canonical": "oklch(0.198 0.03 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 258)",
+          "oklch(0.26 0.03 258)",
+          "oklch(0.37 0.03 258)",
+          "oklch(0.48 0.03 258)",
+          "oklch(0.59 0.03 258)",
+          "oklch(0.70 0.03 258)",
+          "oklch(0.82 0.03 258)",
+          "oklch(0.95 0.03 258)"
+        ]
+      },
+      "popover": {
+        "role": "neutral",
+        "displayName": "Capa",
+        "canonical": "oklch(0.995 0.002 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.002 250)",
+          "oklch(0.26 0.002 250)",
+          "oklch(0.37 0.002 250)",
+          "oklch(0.48 0.002 250)",
+          "oklch(0.59 0.002 250)",
+          "oklch(0.70 0.002 250)",
+          "oklch(0.82 0.002 250)",
+          "oklch(0.95 0.002 250)"
+        ]
+      },
+      "popover-dark": {
+        "role": "neutral",
+        "displayName": "Capa nocturna",
+        "canonical": "oklch(0.215 0.032 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.032 258)",
+          "oklch(0.26 0.032 258)",
+          "oklch(0.37 0.032 258)",
+          "oklch(0.48 0.032 258)",
+          "oklch(0.59 0.032 258)",
+          "oklch(0.70 0.032 258)",
+          "oklch(0.82 0.032 258)",
+          "oklch(0.95 0.032 258)"
+        ]
+      },
+      "primary": {
+        "role": "neutral",
+        "displayName": "Tinta de botón",
+        "canonical": "oklch(0.22 0.032 262)",
+        "tonalRamp": [
+          "oklch(0.15 0.032 262)",
+          "oklch(0.26 0.032 262)",
+          "oklch(0.37 0.032 262)",
+          "oklch(0.48 0.032 262)",
+          "oklch(0.59 0.032 262)",
+          "oklch(0.70 0.032 262)",
+          "oklch(0.82 0.032 262)",
+          "oklch(0.95 0.032 262)"
+        ]
+      },
+      "primary-foreground": {
+        "role": "neutral",
+        "displayName": "Texto sobre tinta",
+        "canonical": "oklch(0.99 0 0)",
+        "tonalRamp": [
+          "oklch(0.15 0.0 0)",
+          "oklch(0.26 0.0 0)",
+          "oklch(0.37 0.0 0)",
+          "oklch(0.48 0.0 0)",
+          "oklch(0.59 0.0 0)",
+          "oklch(0.70 0.0 0)",
+          "oklch(0.82 0.0 0)",
+          "oklch(0.95 0.0 0)"
+        ]
+      },
+      "primary-dark": {
+        "role": "neutral",
+        "displayName": "Tinta de botón (oscuro)",
+        "canonical": "oklch(0.955 0.008 250)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 250)",
+          "oklch(0.26 0.008 250)",
+          "oklch(0.37 0.008 250)",
+          "oklch(0.48 0.008 250)",
+          "oklch(0.59 0.008 250)",
+          "oklch(0.70 0.008 250)",
+          "oklch(0.82 0.008 250)",
+          "oklch(0.95 0.008 250)"
+        ]
+      },
+      "primary-foreground-dark": {
+        "role": "neutral",
+        "displayName": "Texto sobre tinta (oscuro)",
+        "canonical": "oklch(0.2 0.03 260)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 260)",
+          "oklch(0.26 0.03 260)",
+          "oklch(0.37 0.03 260)",
+          "oklch(0.48 0.03 260)",
+          "oklch(0.59 0.03 260)",
+          "oklch(0.70 0.03 260)",
+          "oklch(0.82 0.03 260)",
+          "oklch(0.95 0.03 260)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Secundario",
+        "canonical": "oklch(0.93 0.01 252)",
+        "tonalRamp": [
+          "oklch(0.15 0.01 252)",
+          "oklch(0.26 0.01 252)",
+          "oklch(0.37 0.01 252)",
+          "oklch(0.48 0.01 252)",
+          "oklch(0.59 0.01 252)",
+          "oklch(0.70 0.01 252)",
+          "oklch(0.82 0.01 252)",
+          "oklch(0.95 0.01 252)"
+        ]
+      },
+      "secondary-dark": {
+        "role": "neutral",
+        "displayName": "Secundario (oscuro)",
+        "canonical": "oklch(0.255 0.032 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.032 258)",
+          "oklch(0.26 0.032 258)",
+          "oklch(0.37 0.032 258)",
+          "oklch(0.48 0.032 258)",
+          "oklch(0.59 0.032 258)",
+          "oklch(0.70 0.032 258)",
+          "oklch(0.82 0.032 258)",
+          "oklch(0.95 0.032 258)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Gris de apoyo",
+        "canonical": "oklch(0.94 0.008 252)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 252)",
+          "oklch(0.26 0.008 252)",
+          "oklch(0.37 0.008 252)",
+          "oklch(0.48 0.008 252)",
+          "oklch(0.59 0.008 252)",
+          "oklch(0.70 0.008 252)",
+          "oklch(0.82 0.008 252)",
+          "oklch(0.95 0.008 252)"
+        ]
+      },
+      "muted-dark": {
+        "role": "neutral",
+        "displayName": "Gris de apoyo (oscuro)",
+        "canonical": "oklch(0.245 0.03 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 258)",
+          "oklch(0.26 0.03 258)",
+          "oklch(0.37 0.03 258)",
+          "oklch(0.48 0.03 258)",
+          "oklch(0.59 0.03 258)",
+          "oklch(0.70 0.03 258)",
+          "oklch(0.82 0.03 258)",
+          "oklch(0.95 0.03 258)"
+        ]
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "Texto secundario",
+        "canonical": "oklch(0.47 0.025 260)",
+        "tonalRamp": [
+          "oklch(0.15 0.025 260)",
+          "oklch(0.26 0.025 260)",
+          "oklch(0.37 0.025 260)",
+          "oklch(0.48 0.025 260)",
+          "oklch(0.59 0.025 260)",
+          "oklch(0.70 0.025 260)",
+          "oklch(0.82 0.025 260)",
+          "oklch(0.95 0.025 260)"
+        ]
+      },
+      "muted-foreground-dark": {
+        "role": "neutral",
+        "displayName": "Texto secundario (oscuro)",
+        "canonical": "oklch(0.72 0.022 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.022 255)",
+          "oklch(0.26 0.022 255)",
+          "oklch(0.37 0.022 255)",
+          "oklch(0.48 0.022 255)",
+          "oklch(0.59 0.022 255)",
+          "oklch(0.70 0.022 255)",
+          "oklch(0.82 0.022 255)",
+          "oklch(0.95 0.022 255)"
+        ]
+      },
+      "accent": {
+        "role": "neutral",
+        "displayName": "Hover",
+        "canonical": "oklch(0.93 0.012 252)",
+        "tonalRamp": [
+          "oklch(0.15 0.012 252)",
+          "oklch(0.26 0.012 252)",
+          "oklch(0.37 0.012 252)",
+          "oklch(0.48 0.012 252)",
+          "oklch(0.59 0.012 252)",
+          "oklch(0.70 0.012 252)",
+          "oklch(0.82 0.012 252)",
+          "oklch(0.95 0.012 252)"
+        ]
+      },
+      "accent-dark": {
+        "role": "neutral",
+        "displayName": "Hover (oscuro)",
+        "canonical": "oklch(0.27 0.034 258)",
+        "tonalRamp": [
+          "oklch(0.15 0.034 258)",
+          "oklch(0.26 0.034 258)",
+          "oklch(0.37 0.034 258)",
+          "oklch(0.48 0.034 258)",
+          "oklch(0.59 0.034 258)",
+          "oklch(0.70 0.034 258)",
+          "oklch(0.82 0.034 258)",
+          "oklch(0.95 0.034 258)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Borde",
+        "canonical": "oklch(0.885 0.012 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.012 255)",
+          "oklch(0.26 0.012 255)",
+          "oklch(0.37 0.012 255)",
+          "oklch(0.48 0.012 255)",
+          "oklch(0.59 0.012 255)",
+          "oklch(0.70 0.012 255)",
+          "oklch(0.82 0.012 255)",
+          "oklch(0.95 0.012 255)"
+        ]
+      },
+      "border-dark": {
+        "role": "neutral",
+        "displayName": "Borde (oscuro)",
+        "canonical": "oklch(0.86 0.03 255 / 11%)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 255)",
+          "oklch(0.26 0.03 255)",
+          "oklch(0.37 0.03 255)",
+          "oklch(0.48 0.03 255)",
+          "oklch(0.59 0.03 255)",
+          "oklch(0.70 0.03 255)",
+          "oklch(0.82 0.03 255)",
+          "oklch(0.95 0.03 255)"
+        ]
+      },
+      "input": {
+        "role": "neutral",
+        "displayName": "Borde de campo",
+        "canonical": "oklch(0.62 0.02 255)",
+        "tonalRamp": [
+          "oklch(0.15 0.02 255)",
+          "oklch(0.26 0.02 255)",
+          "oklch(0.37 0.02 255)",
+          "oklch(0.48 0.02 255)",
+          "oklch(0.59 0.02 255)",
+          "oklch(0.70 0.02 255)",
+          "oklch(0.82 0.02 255)",
+          "oklch(0.95 0.02 255)"
+        ]
+      },
+      "input-dark": {
+        "role": "neutral",
+        "displayName": "Borde de campo (oscuro)",
+        "canonical": "oklch(0.86 0.03 255 / 16%)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 255)",
+          "oklch(0.26 0.03 255)",
+          "oklch(0.37 0.03 255)",
+          "oklch(0.48 0.03 255)",
+          "oklch(0.59 0.03 255)",
+          "oklch(0.70 0.03 255)",
+          "oklch(0.82 0.03 255)",
+          "oklch(0.95 0.03 255)"
+        ]
+      },
+      "ring": {
+        "role": "neutral",
+        "displayName": "Anillo de foco",
+        "canonical": "oklch(0.22 0.032 262 / 55%)",
+        "tonalRamp": [
+          "oklch(0.15 0.032 262)",
+          "oklch(0.26 0.032 262)",
+          "oklch(0.37 0.032 262)",
+          "oklch(0.48 0.032 262)",
+          "oklch(0.59 0.032 262)",
+          "oklch(0.70 0.032 262)",
+          "oklch(0.82 0.032 262)",
+          "oklch(0.95 0.032 262)"
+        ]
+      },
+      "ring-dark": {
+        "role": "neutral",
+        "displayName": "Anillo de foco (oscuro)",
+        "canonical": "oklch(0.955 0.008 250 / 55%)",
+        "tonalRamp": [
+          "oklch(0.15 0.008 250)",
+          "oklch(0.26 0.008 250)",
+          "oklch(0.37 0.008 250)",
+          "oklch(0.48 0.008 250)",
+          "oklch(0.59 0.008 250)",
+          "oklch(0.70 0.008 250)",
+          "oklch(0.82 0.008 250)",
+          "oklch(0.95 0.008 250)"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Verde señal",
+        "canonical": "oklch(0.45 0.13 156)",
+        "tonalRamp": [
+          "oklch(0.15 0.13 156)",
+          "oklch(0.26 0.13 156)",
+          "oklch(0.37 0.13 156)",
+          "oklch(0.48 0.13 156)",
+          "oklch(0.59 0.13 156)",
+          "oklch(0.70 0.13 156)",
+          "oklch(0.82 0.13 156)",
+          "oklch(0.95 0.13 156)"
+        ]
+      },
+      "signal-dark": {
+        "role": "primary",
+        "displayName": "Verde señal (oscuro)",
+        "canonical": "oklch(0.79 0.16 156)",
+        "tonalRamp": [
+          "oklch(0.15 0.16 156)",
+          "oklch(0.26 0.16 156)",
+          "oklch(0.37 0.16 156)",
+          "oklch(0.48 0.16 156)",
+          "oklch(0.59 0.16 156)",
+          "oklch(0.70 0.16 156)",
+          "oklch(0.82 0.16 156)",
+          "oklch(0.95 0.16 156)"
+        ]
+      },
+      "signal-fg": {
+        "role": "primary",
+        "displayName": "Texto sobre señal",
+        "canonical": "oklch(0.99 0.01 156)",
+        "tonalRamp": [
+          "oklch(0.15 0.01 156)",
+          "oklch(0.26 0.01 156)",
+          "oklch(0.37 0.01 156)",
+          "oklch(0.48 0.01 156)",
+          "oklch(0.59 0.01 156)",
+          "oklch(0.70 0.01 156)",
+          "oklch(0.82 0.01 156)",
+          "oklch(0.95 0.01 156)"
+        ]
+      },
+      "signal-fg-dark": {
+        "role": "primary",
+        "displayName": "Texto sobre señal (oscuro)",
+        "canonical": "oklch(0.2 0.045 160)",
+        "tonalRamp": [
+          "oklch(0.15 0.045 160)",
+          "oklch(0.26 0.045 160)",
+          "oklch(0.37 0.045 160)",
+          "oklch(0.48 0.045 160)",
+          "oklch(0.59 0.045 160)",
+          "oklch(0.70 0.045 160)",
+          "oklch(0.82 0.045 160)",
+          "oklch(0.95 0.045 160)"
+        ]
+      },
+      "signal-soft": {
+        "role": "primary",
+        "displayName": "Tinte señal",
+        "canonical": "oklch(0.56 0.14 156 / 12%)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 156)",
+          "oklch(0.26 0.14 156)",
+          "oklch(0.37 0.14 156)",
+          "oklch(0.48 0.14 156)",
+          "oklch(0.59 0.14 156)",
+          "oklch(0.70 0.14 156)",
+          "oklch(0.82 0.14 156)",
+          "oklch(0.95 0.14 156)"
+        ]
+      },
+      "signal-soft-dark": {
+        "role": "primary",
+        "displayName": "Tinte señal (oscuro)",
+        "canonical": "oklch(0.79 0.16 156 / 14%)",
+        "tonalRamp": [
+          "oklch(0.15 0.16 156)",
+          "oklch(0.26 0.16 156)",
+          "oklch(0.37 0.16 156)",
+          "oklch(0.48 0.16 156)",
+          "oklch(0.59 0.16 156)",
+          "oklch(0.70 0.16 156)",
+          "oklch(0.82 0.16 156)",
+          "oklch(0.95 0.16 156)"
+        ]
+      },
+      "halt": {
+        "role": "secondary",
+        "displayName": "Rojo alto",
+        "canonical": "oklch(0.5 0.19 27)",
+        "tonalRamp": [
+          "oklch(0.15 0.19 27)",
+          "oklch(0.26 0.19 27)",
+          "oklch(0.37 0.19 27)",
+          "oklch(0.48 0.19 27)",
+          "oklch(0.59 0.19 27)",
+          "oklch(0.70 0.19 27)",
+          "oklch(0.82 0.19 27)",
+          "oklch(0.95 0.19 27)"
+        ]
+      },
+      "halt-dark": {
+        "role": "secondary",
+        "displayName": "Rojo alto (oscuro)",
+        "canonical": "oklch(0.68 0.19 25)",
+        "tonalRamp": [
+          "oklch(0.15 0.19 25)",
+          "oklch(0.26 0.19 25)",
+          "oklch(0.37 0.19 25)",
+          "oklch(0.48 0.19 25)",
+          "oklch(0.59 0.19 25)",
+          "oklch(0.70 0.19 25)",
+          "oklch(0.82 0.19 25)",
+          "oklch(0.95 0.19 25)"
+        ]
+      },
+      "halt-soft": {
+        "role": "secondary",
+        "displayName": "Tinte rojo",
+        "canonical": "oklch(0.55 0.2 27 / 10%)",
+        "tonalRamp": [
+          "oklch(0.15 0.2 27)",
+          "oklch(0.26 0.2 27)",
+          "oklch(0.37 0.2 27)",
+          "oklch(0.48 0.2 27)",
+          "oklch(0.59 0.2 27)",
+          "oklch(0.70 0.2 27)",
+          "oklch(0.82 0.2 27)",
+          "oklch(0.95 0.2 27)"
+        ]
+      },
+      "halt-soft-dark": {
+        "role": "secondary",
+        "displayName": "Tinte rojo (oscuro)",
+        "canonical": "oklch(0.68 0.19 25 / 14%)",
+        "tonalRamp": [
+          "oklch(0.15 0.19 25)",
+          "oklch(0.26 0.19 25)",
+          "oklch(0.37 0.19 25)",
+          "oklch(0.48 0.19 25)",
+          "oklch(0.59 0.19 25)",
+          "oklch(0.70 0.19 25)",
+          "oklch(0.82 0.19 25)",
+          "oklch(0.95 0.19 25)"
+        ]
+      },
+      "wait": {
+        "role": "tertiary",
+        "displayName": "Ámbar espera",
+        "canonical": "oklch(0.52 0.12 65)",
+        "tonalRamp": [
+          "oklch(0.15 0.12 65)",
+          "oklch(0.26 0.12 65)",
+          "oklch(0.37 0.12 65)",
+          "oklch(0.48 0.12 65)",
+          "oklch(0.59 0.12 65)",
+          "oklch(0.70 0.12 65)",
+          "oklch(0.82 0.12 65)",
+          "oklch(0.95 0.12 65)"
+        ]
+      },
+      "wait-dark": {
+        "role": "tertiary",
+        "displayName": "Ámbar espera (oscuro)",
+        "canonical": "oklch(0.82 0.13 78)",
+        "tonalRamp": [
+          "oklch(0.15 0.13 78)",
+          "oklch(0.26 0.13 78)",
+          "oklch(0.37 0.13 78)",
+          "oklch(0.48 0.13 78)",
+          "oklch(0.59 0.13 78)",
+          "oklch(0.70 0.13 78)",
+          "oklch(0.82 0.13 78)",
+          "oklch(0.95 0.13 78)"
+        ]
+      },
+      "wait-soft": {
+        "role": "tertiary",
+        "displayName": "Tinte ámbar",
+        "canonical": "oklch(0.72 0.14 75 / 16%)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 75)",
+          "oklch(0.26 0.14 75)",
+          "oklch(0.37 0.14 75)",
+          "oklch(0.48 0.14 75)",
+          "oklch(0.59 0.14 75)",
+          "oklch(0.70 0.14 75)",
+          "oklch(0.82 0.14 75)",
+          "oklch(0.95 0.14 75)"
+        ]
+      },
+      "wait-soft-dark": {
+        "role": "tertiary",
+        "displayName": "Tinte ámbar (oscuro)",
+        "canonical": "oklch(0.82 0.13 78 / 14%)",
+        "tonalRamp": [
+          "oklch(0.15 0.13 78)",
+          "oklch(0.26 0.13 78)",
+          "oklch(0.37 0.13 78)",
+          "oklch(0.48 0.13 78)",
+          "oklch(0.59 0.13 78)",
+          "oklch(0.70 0.13 78)",
+          "oklch(0.82 0.13 78)",
+          "oklch(0.95 0.13 78)"
+        ]
+      },
+      "ground-glow": {
+        "role": "primary",
+        "displayName": "Resplandor de fondo",
+        "canonical": "oklch(0.56 0.14 156 / 7%)",
+        "tonalRamp": [
+          "oklch(0.15 0.14 156)",
+          "oklch(0.26 0.14 156)",
+          "oklch(0.37 0.14 156)",
+          "oklch(0.48 0.14 156)",
+          "oklch(0.59 0.14 156)",
+          "oklch(0.70 0.14 156)",
+          "oklch(0.82 0.14 156)",
+          "oklch(0.95 0.14 156)"
+        ]
+      },
+      "ground-glow-dark": {
+        "role": "primary",
+        "displayName": "Resplandor de fondo (oscuro)",
+        "canonical": "oklch(0.79 0.16 156 / 6%)",
+        "tonalRamp": [
+          "oklch(0.15 0.16 156)",
+          "oklch(0.26 0.16 156)",
+          "oklch(0.37 0.16 156)",
+          "oklch(0.48 0.16 156)",
+          "oklch(0.59 0.16 156)",
+          "oklch(0.70 0.16 156)",
+          "oklch(0.82 0.16 156)",
+          "oklch(0.95 0.16 156)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Estado",
+        "purpose": "Estado del encendido y título del login."
+      },
+      "headline": {
+        "displayName": "Sección",
+        "purpose": "Títulos de sección y seudónimo en la hoja."
+      },
+      "title": {
+        "displayName": "Fila",
+        "purpose": "Seudónimo en cada fila."
+      },
+      "body": {
+        "displayName": "Texto",
+        "purpose": "Descripciones y ayudas."
+      },
+      "label": {
+        "displayName": "Etiqueta",
+        "purpose": "Chips y leyendas bajo cifras."
+      },
+      "data-hero": {
+        "displayName": "Cifra mayor",
+        "purpose": "Latencia mediana en la hoja."
+      },
+      "data-figure": {
+        "displayName": "Cifra",
+        "purpose": "Conteos del servicio."
+      },
+      "data": {
+        "displayName": "Dato",
+        "purpose": "Ping y minutos en la fila."
+      },
+      "data-small": {
+        "displayName": "Dato menor",
+        "purpose": "Modelo, versión, IP, archivos, horas."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 24px 60px -40px oklch(0.2 0.04 260 / 50%)",
+        "purpose": "Panel del servicio en reposo."
+      },
+      {
+        "name": "power-open",
+        "value": "0 18px 50px -18px var(--signal)",
+        "purpose": "Encendido abierto."
+      },
+      {
+        "name": "power-scheduled",
+        "value": "0 18px 50px -22px var(--wait)",
+        "purpose": "Encendido fuera de horario."
+      },
+      {
+        "name": "power-closed",
+        "value": "0 18px 40px -24px oklch(0.2 0.03 260 / 45%)",
+        "purpose": "Encendido cerrado."
+      },
+      {
+        "name": "row-highlight",
+        "value": "0 10px 30px -18px var(--signal)",
+        "purpose": "Fila con un cambio sin ver."
+      },
+      {
+        "name": "ground-glow",
+        "value": "radial-gradient(120% 70% at 18% -10%, var(--ground-glow), transparent 60%)",
+        "purpose": "Resplandor fijo del fondo (background-image del body)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Curva única de estado y reordenamiento."
+      },
+      {
+        "name": "state-change",
+        "value": "500ms",
+        "purpose": "Color, borde y sombra del encendido y de las filas."
+      },
+      {
+        "name": "row-reorder",
+        "value": "450ms",
+        "purpose": "Layout animation de la lista."
+      },
+      {
+        "name": "power-pulse",
+        "value": "2.4s ease-out infinite, scale 0.86 a 1.06, opacity 0.6 a 0",
+        "purpose": "Anillo que late con sesiones vivas."
+      },
+      {
+        "name": "press",
+        "value": "scale 0.96",
+        "purpose": "Gesto al pulsar el encendido."
+      },
+      {
+        "name": "overlay",
+        "value": "100-200ms fade/zoom/slide",
+        "purpose": "Hoja, diálogos y menús."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation y transition a 0.01ms",
+        "purpose": "Con prefers-reduced-motion: reduce; sin pulso, gesto ni layout animation."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "container",
+        "value": "1400px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón de tinta",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Acción común sin estado: Guardar horario, Descargar .zip, Entrar.",
+      "html": "<button class=\"ds-btn-ink\">Guardar horario</button>",
+      "css": ".ds-btn-ink{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:16px;border:1px solid transparent;font-size:.875rem;font-weight:500;cursor:pointer;transition:background-color .15s,transform .1s;background:var(--primary);color:var(--primary-foreground);} .ds-btn-ink:hover{background:color-mix(in oklch,var(--primary) 80%,transparent);} .ds-btn-ink:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklch,var(--ring) 50%,transparent);} .ds-btn-ink:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Botón Aprobar",
+      "kind": "button",
+      "refersTo": "button-signal",
+      "description": "Única acción en verde señal: aprobar un teléfono pendiente.",
+      "html": "<button class=\"ds-btn-signal\">Aprobar</button>",
+      "css": ".ds-btn-signal{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:16px;border:1px solid transparent;font-size:.875rem;font-weight:500;cursor:pointer;transition:background-color .15s,transform .1s;height:32px;padding:0 12px;border-radius:12px;font-size:.8rem;background:var(--signal);color:var(--signal-fg);} .ds-btn-signal:hover{background:color-mix(in oklch,var(--signal) 85%,transparent);} .ds-btn-signal:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklch,var(--ring) 50%,transparent);} .ds-btn-signal:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Botón outline",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acciones secundarias con consecuencia: Cerrar sesión, Pedir logs.",
+      "html": "<button class=\"ds-btn-outline\">Cerrar sesión</button>",
+      "css": ".ds-btn-outline{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:16px;border:1px solid transparent;font-size:.875rem;font-weight:500;cursor:pointer;transition:background-color .15s,transform .1s;background:var(--background);color:var(--foreground);border-color:var(--border);} .ds-btn-outline:hover{background:var(--muted);} .ds-btn-outline:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklch,var(--ring) 50%,transparent);} .ds-btn-outline:active{transform:translateY(1px);}"
+    },
+    {
+      "name": "Botón destructivo",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Borrar, deshabilitar o cerrar el servicio con sesiones vivas.",
+      "html": "<button class=\"ds-btn-halt\">Cerrar el servicio</button>",
+      "css": ".ds-btn-halt{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:16px;border:1px solid transparent;font-size:.875rem;font-weight:500;cursor:pointer;transition:background-color .15s,transform .1s;background:var(--halt-soft);color:var(--halt);} .ds-btn-halt:hover{background:color-mix(in oklch,var(--halt) 20%,transparent);} .ds-btn-halt:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklch,var(--ring) 50%,transparent);}"
+    },
+    {
+      "name": "Botón de encendido",
+      "kind": "custom",
+      "refersTo": "power-button-open",
+      "description": "El control del servicio en fase abierta, con anillo interior y pulso cuando hay sesiones.",
+      "html": "<div class=\"ds-power\"><span class=\"ds-power-pulse\"></span><span class=\"ds-power-ring\"></span><button class=\"ds-power-btn\" aria-pressed=\"true\" aria-label=\"Cerrar el servicio\"><svg viewBox=\"0 0 24 24\" width=\"56\" height=\"56\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 2v10\"/><path d=\"M18.4 6.6a9 9 0 1 1-12.77.04\"/></svg></button></div>",
+      "css": ".ds-power{position:relative;display:grid;place-items:center;width:224px;height:224px;} .ds-power-ring{position:absolute;inset:12px;border-radius:9999px;border:1px solid color-mix(in oklch,var(--signal) 45%,transparent);} .ds-power-pulse{position:absolute;inset:0;border-radius:9999px;border:1px solid var(--signal);animation:ds-pulse 2.4s ease-out infinite;} @keyframes ds-pulse{from{transform:scale(.86);opacity:.6}to{transform:scale(1.06);opacity:0}} .ds-power-btn{position:relative;display:grid;place-items:center;width:160px;height:160px;border-radius:9999px;border:1px solid color-mix(in oklch,var(--signal) 60%,transparent);background:var(--signal-soft);color:var(--signal);box-shadow:0 18px 50px -18px var(--signal);cursor:pointer;transition:background-color .5s cubic-bezier(0.16,1,0.3,1),border-color .5s cubic-bezier(0.16,1,0.3,1),box-shadow .5s cubic-bezier(0.16,1,0.3,1),transform .15s;} .ds-power-btn:active{transform:scale(.96);} .ds-power-btn:focus-visible{outline:2px solid var(--ring);outline-offset:4px;} @media (prefers-reduced-motion:reduce){.ds-power-pulse{display:none}}"
+    },
+    {
+      "name": "Chips de estado",
+      "kind": "chip",
+      "refersTo": "chip-live",
+      "description": "En sesión (con punto que late), Pendiente, Aprobado y Deshabilitado.",
+      "html": "<span class=\"ds-chip ds-chip-live\"><span class=\"ds-dot\"></span>En sesión</span> <span class=\"ds-chip ds-chip-wait\">Pendiente</span> <span class=\"ds-chip ds-chip-muted\">Aprobado</span> <span class=\"ds-chip ds-chip-halt\">Deshabilitado</span>",
+      "css": ".ds-chip{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:9999px;font-size:.75rem;font-weight:500;white-space:nowrap;} .ds-chip-live{background:var(--signal-soft);color:var(--signal);} .ds-chip-wait{background:var(--wait-soft);color:var(--wait);} .ds-chip-muted{background:var(--muted);color:var(--muted-foreground);} .ds-chip-halt{background:var(--halt-soft);color:var(--halt);} .ds-dot{width:6px;height:6px;border-radius:9999px;background:var(--signal);}"
+    },
+    {
+      "name": "Filtros segmentados",
+      "kind": "nav",
+      "refersTo": "filter-segment-selected",
+      "description": "Filtro de la lista en pill con conteos en mono; aria-pressed en cada segmento.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Filtrar teléfonos\"><button class=\"ds-seg-btn\" aria-pressed=\"true\">Todos <span class=\"ds-n\">4</span></button><button class=\"ds-seg-btn\" aria-pressed=\"false\">Pendientes <span class=\"ds-n\">0</span></button><button class=\"ds-seg-btn\" aria-pressed=\"false\">En sesión <span class=\"ds-n\">1</span></button></div>",
+      "css": ".ds-seg{display:inline-flex;gap:4px;padding:4px;border-radius:9999px;border:1px solid var(--border);background:color-mix(in oklch,var(--card) 60%,transparent);} .ds-seg-btn{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:9999px;background:transparent;color:var(--muted-foreground);font-size:.875rem;cursor:pointer;transition:color .15s,background-color .15s;} .ds-seg-btn:hover{color:var(--foreground);} .ds-seg-btn[aria-pressed=true]{background:var(--foreground);color:var(--background);} .ds-seg-btn:focus-visible{outline:2px solid var(--ring);outline-offset:2px;} .ds-n{font-family:'Geist Mono Variable',ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:.75rem;opacity:.7;}"
+    },
+    {
+      "name": "Fila de teléfono resaltada",
+      "kind": "card",
+      "refersTo": "device-row-highlighted",
+      "description": "Fila de la lista con columnas fijas, resaltada tras un cambio de estado hasta que se ve.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-row-icon\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\"/><path d=\"M12 18h.01\"/></svg></span><span class=\"ds-row-name\"><span class=\"ds-t\">Participante 3</span><span class=\"ds-mono\">2312DRA50G, Android 16</span></span><span class=\"ds-chip-live2\">En sesión</span><span class=\"ds-num\">2,6 s<small>ping</small></span><span class=\"ds-num\">5 min<small>hoy</small></span></div>",
+      "css": ".ds-row{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;display:grid;grid-template-columns:auto minmax(0,1fr) 9rem 4.5rem 6.5rem;align-items:center;column-gap:16px;padding:14px 16px;border-radius:16px;border:1px solid color-mix(in oklch,var(--signal) 50%,transparent);background:var(--signal-soft);box-shadow:0 10px 30px -18px var(--signal);color:var(--foreground);transition:background-color .5s,border-color .5s,box-shadow .5s;} .ds-row-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:20px;border:1px solid color-mix(in oklch,var(--signal) 40%,transparent);background:var(--signal-soft);color:var(--signal);} .ds-row-name{display:flex;flex-direction:column;min-width:0;} .ds-t{font-weight:500;} .ds-mono{font-family:'Geist Mono Variable',ui-monospace,monospace;font-size:.75rem;color:var(--muted-foreground);} .ds-chip-live2{justify-self:start;height:24px;display:inline-flex;align-items:center;padding:0 10px;border-radius:9999px;font-size:.75rem;font-weight:500;background:var(--signal-soft);color:var(--signal);} .ds-num{display:flex;flex-direction:column;align-items:flex-end;font-family:'Geist Mono Variable',ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:.875rem;} .ds-num small{font-family:'Geist Variable',sans-serif;font-size:.75rem;color:var(--muted-foreground);}"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo con borde de 1px y halo de foco; horas y límites en mono.",
+      "html": "<input class=\"ds-input\" placeholder=\"Seudónimo\" aria-label=\"Seudónimo\">",
+      "css": ".ds-input{font-family:'Geist Variable',ui-sans-serif,system-ui,sans-serif;height:32px;padding:4px 10px;border-radius:16px;border:1px solid var(--input);background:transparent;color:var(--foreground);font-size:.875rem;transition:border-color .15s,box-shadow .15s;} .ds-input::placeholder{color:var(--muted-foreground);} .ds-input:focus-visible{outline:none;border-color:var(--ring);box-shadow:0 0 0 3px color-mix(in oklch,var(--ring) 50%,transparent);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "El botón de conectar",
+    "overview": "La consola se construyó como una app de VPN: el servicio de Lazarus es \"la conexión\" y se gobierna con un solo botón de encendido redondo, grande y central, rodeado de anillos que cambian de color con su estado. Los teléfonos del piloto son la \"lista de servidores\": filas limpias con su estado, sus minutos de hoy y su ping (latencia voz a voz). El estado se lee de lejos antes que cualquier otra cosa; todo lo demás es tinta y niebla.\n\nEl mundo es sobrio y nocturno. En oscuro, un fondo de tinta azul (oklch 0.155, tono 258) con superficies apenas más claras; en claro, una niebla gris azulada. Sobre esa base hay un solo acento, el verde señal, y dos colores de estado: rojo para lo destructivo y lo cerrado, ámbar para lo que espera una decisión. Un resplandor verde muy tenue (ground-glow, 6-7 % de opacidad) se filtra desde la esquina superior izquierda del fondo, como la luz de un equipo encendido. La densidad es de herramienta de operación: filas compactas, cifras en mono tabular, sin decoración.\n\nEl sistema rechaza, por decisión del usuario, el admin genérico de barra lateral, tabla gris y fila de tarjetas de KPI iguales.",
+    "keyCharacteristics": [
+      "Un control protagonista (el encendido) y una lista; nada compite con ellos.",
+      "Un solo acento, reservado para el estado \"vivo\"; el resto de la interfaz es tinta.",
+      "Geist para todo; Geist Mono con cifras tabulares solo para números y datos técnicos.",
+      "Superficies de 16px de radio; pill para lo que es estado o selección (encendido, chips, filtros, días).",
+      "Tema oscuro y claro con los mismos roles; el oscuro es el de referencia."
+    ],
+    "rules": [
+      {
+        "name": "The Reserved Signal Rule",
+        "body": "El verde señal significa \"abierto\", \"en sesión\" o \"aprobar\", y nada más. Un botón común es de tinta, no verde. La única aparición del verde fuera de un estado es el emblema de la marca (el icono de encendido del wordmark y los anillos de la ilustración del login), porque el encendido es la marca.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Lights Rule",
+        "body": "Verde para lo vivo, ámbar para lo que espera, rojo para lo destructivo y lo cerrado. Cada uno lleva su tinte -soft como fondo y su color pleno como texto o borde; no se mezclan en un mismo elemento.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Default Rule",
+        "body": "Si un control no expresa estado, va en tinta (primary), outline o ghost.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Means Measured Rule",
+        "body": "Geist Mono con `tabular-nums` solo para cifras y datos técnicos (minutos, ms o s, conteos, IP, modelo, versión, archivos, horas). Nunca para títulos, etiquetas ni prosa.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Todo en minúscula de oración, sin mayúsculas sostenidas ni tracking ancho; la jerarquía la dan el tamaño y el peso.",
+        "section": "typography"
+      },
+      {
+        "name": "The Fixed Columns Rule",
+        "body": "Desde md (768px) cada fila de teléfono usa columnas fijas: icono, nombre (flexible), estado (9rem), ping (4.5rem), minutos (6.5rem) y acciones (9.5rem). Las cifras de todas las filas quedan alineadas en vertical como una tabla sin serlo. En el celular, estado, minutos y ping bajan a una segunda línea.",
+        "section": "layout"
+      },
+      {
+        "name": "The State Glow Rule",
+        "body": "Una sombra con color solo acompaña a un estado (encendido, fila cambiada). Lo que no tiene estado se queda plano o con la sombra neutra del panel.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** reservar signal, signal-fg y signal-soft para \"abierto\", \"en sesión\" y \"aprobar\".",
+      "**Do** usar halt solo para lo destructivo y lo cerrado o deshabilitado, y wait para lo pendiente.",
+      "**Do** poner los botones sin estado en tinta (primary), outline o ghost.",
+      "**Do** escribir toda cifra o dato técnico en Geist Mono con tabular-nums.",
+      "**Do** usar 16px de radio en superficies, filas, botones y campos, y pill para encendido, chips, filtros y días.",
+      "**Do** mantener los pares de texto en AA en ambos temas: tinta sobre fondo (16:1 claro, 17:1 oscuro), muted-foreground sobre card (6.7:1 y 7.3:1), y cada color de estado sobre su tinte (4.9:1 o más).",
+      "**Do** dar a cada control foco visible (contorno de 2px en ring con 2px de separación; 4px en el encendido), `aria-pressed` a los conmutadores y `aria-live=\"polite\"` a los estados que cambian solos.",
+      "**Do** actualizar filas en su sitio y resaltar el cambio hasta que se vea; nunca reordenar bajo el puntero.",
+      "**Do** respetar `prefers-reduced-motion` en todo movimiento nuevo."
+    ],
+    "donts": [
+      "**Don't** pintar de verde un botón común, un enlace o una acción que no sea aprobar.",
+      "**Don't** construir el admin genérico: barra lateral, tabla gris o fila de tarjetas de KPI iguales.",
+      "**Don't** usar sombras grises duras ni sombras de color sin un estado que las justifique.",
+      "**Don't** usar Geist Mono para títulos, etiquetas o prosa.",
+      "**Don't** mostrar nombres reales ni contenido de los logs; solo seudónimos y metadatos."
+    ]
+  }
+}
