@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Variables locales (BACKEND_URL del proxy de desarrollo)
+.env
+.env.local
+.impeccable/review/
+.imeccable
