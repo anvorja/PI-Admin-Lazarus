@@ -38,7 +38,9 @@ export function useDeviceActions(device: Device) {
     requestLogs: () =>
       patch(
         { upload_requested: true },
-        "Logs pedidos: llegan al empezar su próxima sesión"
+        device.active
+          ? "Logs pedidos: llegan cuando termine su sesión"
+          : "Logs pedidos: llegan cuando empiece su próxima sesión"
       ),
     closeSession: () =>
       close.mutate(device.id, {
