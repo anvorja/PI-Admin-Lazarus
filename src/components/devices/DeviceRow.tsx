@@ -42,7 +42,7 @@ export function DeviceRow({
       onFocusCapture={onSeen}
       className={cn(
         "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-3 rounded-lg border px-4 py-3.5 transition-[background-color,border-color,box-shadow] duration-500",
-        "md:grid-cols-[auto_minmax(0,1fr)_9rem_4.5rem_6.5rem_9.5rem]",
+        "@3xl:grid-cols-[auto_minmax(0,1fr)_9rem_4.5rem_7rem_11.5rem] @3xl:gap-x-5",
         highlighted
           ? "border-signal/50 bg-signal-soft shadow-[0_10px_30px_-18px_var(--signal)]"
           : "border-transparent hover:border-border hover:bg-card/70"
@@ -86,12 +86,12 @@ export function DeviceRow({
         </span>
       </button>
 
-      <div className="col-span-3 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 md:col-span-1 md:row-start-auto md:flex-col md:items-start md:gap-1">
+      <div className="col-span-3 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 @3xl:col-span-1 @3xl:row-start-auto @3xl:flex-col @3xl:items-start @3xl:gap-1">
         <StatusChip device={device} />
         <span className="text-xs text-muted-foreground">
           Visto {formatRelative(device.last_seen_at)}
         </span>
-        <span className="text-xs text-muted-foreground md:hidden">
+        <span className="text-xs text-muted-foreground @3xl:hidden">
           <span className="tabular font-mono">
             {formatMinutes(device.minutes_today)}
           </span>{" "}
@@ -105,7 +105,7 @@ export function DeviceRow({
         </span>
       </div>
 
-      <div className="hidden text-right md:block">
+      <div className="hidden text-right @3xl:block">
         <p className="tabular font-mono text-sm">
           {ping !== null ? formatSeconds(ping) : "—"}
         </p>
@@ -114,7 +114,7 @@ export function DeviceRow({
         </p>
       </div>
 
-      <div className="hidden text-right md:block">
+      <div className="hidden text-right @3xl:block">
         <p className="tabular font-mono text-sm whitespace-nowrap">
           {limit
             ? `${Math.round(device.minutes_today)} / ${limit} min`
@@ -123,7 +123,7 @@ export function DeviceRow({
         <p className="text-xs text-muted-foreground">hoy</p>
       </div>
 
-      <div className="col-start-3 row-start-1 flex items-center gap-1 justify-self-end md:col-start-auto md:row-start-auto">
+      <div className="col-start-3 row-start-1 flex items-center gap-2 justify-self-end @3xl:col-start-auto @3xl:row-start-auto">
         {device.status === "pending" ? (
           <Button
             size="sm"
