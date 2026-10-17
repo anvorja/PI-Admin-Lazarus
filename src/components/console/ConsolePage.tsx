@@ -28,7 +28,7 @@ export function ConsolePage() {
         <h1 className="sr-only">Consola del piloto</h1>
         <section
           aria-label="Servicio"
-          className="rounded-3xl border bg-card/70 p-6 shadow-[0_24px_60px_-40px_oklch(0.2_0.04_260/50%)] sm:p-8 lg:col-start-1 lg:row-start-1"
+          className="rounded-lg border bg-card/70 p-6 shadow-[0_24px_60px_-40px_oklch(0.2_0.04_260/50%)] sm:p-8 lg:col-start-1 lg:row-start-1"
         >
           <ServicePanel devices={devices.data} />
         </section>
@@ -43,7 +43,7 @@ export function ConsolePage() {
         </div>
         <section
           aria-label="Horario"
-          className="h-fit rounded-3xl border bg-card/70 p-6 sm:p-8 lg:col-start-1 lg:row-start-2"
+          className="h-fit rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-start-1 lg:row-start-2"
         >
           <ScheduleSection />
         </section>

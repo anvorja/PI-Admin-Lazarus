@@ -19,23 +19,26 @@
   --card-foreground: oklch(0.22 0.032 262);
   --popover: oklch(0.995 0.002 250);
   --popover-foreground: oklch(0.22 0.032 262);
-  --primary: oklch(0.56 0.14 156);
-  --primary-foreground: oklch(0.99 0.01 156);
+  --primary: oklch(0.22 0.032 262);
+  --primary-foreground: oklch(0.99 0 0);
   --secondary: oklch(0.93 0.01 252);
   --secondary-foreground: oklch(0.26 0.03 262);
   --muted: oklch(0.94 0.008 252);
   --muted-foreground: oklch(0.47 0.025 260);
   --accent: oklch(0.93 0.012 252);
   --accent-foreground: oklch(0.22 0.032 262);
-  --destructive: oklch(0.55 0.2 27);
+  --destructive: oklch(0.5 0.19 27);
   --border: oklch(0.885 0.012 255);
-  --input: oklch(0.87 0.014 255);
-  --ring: oklch(0.56 0.14 156);
-  --signal: oklch(0.56 0.14 156);
+  --input: oklch(0.62 0.02 255);
+  --ring: oklch(0.22 0.032 262 / 55%);
+  /* Texto y relleno del acento en claro, con contraste AA; el tinte suave y el
+     brillo del fondo derivan del verde más claro. */
+  --signal: oklch(0.45 0.13 156);
+  --signal-fg: oklch(0.99 0.01 156);
   --signal-soft: oklch(0.56 0.14 156 / 12%);
-  --halt: oklch(0.55 0.2 27);
+  --halt: oklch(0.5 0.19 27);
   --halt-soft: oklch(0.55 0.2 27 / 10%);
-  --wait: oklch(0.6 0.13 70);
+  --wait: oklch(0.52 0.12 65);
   --wait-soft: oklch(0.72 0.14 75 / 16%);
   --ground-glow: oklch(0.56 0.14 156 / 7%);
   --radius: 1rem;
@@ -48,8 +51,8 @@
   --card-foreground: oklch(0.955 0.008 250);
   --popover: oklch(0.215 0.032 258);
   --popover-foreground: oklch(0.955 0.008 250);
-  --primary: oklch(0.79 0.16 156);
-  --primary-foreground: oklch(0.2 0.045 160);
+  --primary: oklch(0.955 0.008 250);
+  --primary-foreground: oklch(0.2 0.03 260);
   --secondary: oklch(0.255 0.032 258);
   --secondary-foreground: oklch(0.93 0.01 250);
   --muted: oklch(0.245 0.03 258);
@@ -59,8 +62,9 @@
   --destructive: oklch(0.68 0.19 25);
   --border: oklch(0.86 0.03 255 / 11%);
   --input: oklch(0.86 0.03 255 / 16%);
-  --ring: oklch(0.79 0.16 156);
+  --ring: oklch(0.955 0.008 250 / 55%);
   --signal: oklch(0.79 0.16 156);
+  --signal-fg: oklch(0.2 0.045 160);
   --signal-soft: oklch(0.79 0.16 156 / 14%);
   --halt: oklch(0.68 0.19 25);
   --halt-soft: oklch(0.68 0.19 25 / 14%);
@@ -92,6 +96,7 @@
   --color-background: var(--background);
   --color-signal: var(--signal);
   --color-signal-soft: var(--signal-soft);
+  --color-signal-fg: var(--signal-fg);
   --color-halt: var(--halt);
   --color-halt-soft: var(--halt-soft);
   --color-wait: var(--wait);
@@ -130,7 +135,7 @@
     outline-offset: 2px;
   }
   input {
-    caret-color: var(--signal);
+    caret-color: var(--foreground);
   }
   * {
     scrollbar-width: thin;

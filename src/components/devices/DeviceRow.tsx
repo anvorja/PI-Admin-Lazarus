@@ -1,11 +1,17 @@
 import { ChevronRight, Smartphone, Unplug } from "lucide-react"
+import { motion, useReducedMotion } from "motion/react"
 
 import { DeviceMenu } from "@/components/devices/DeviceMenu"
 import { StatusChip } from "@/components/devices/StatusChip"
 import { Button } from "@/components/ui/button"
 import { useDeviceActions } from "@/hooks/useDeviceActions"
 import type { Device } from "@/lib/api/schemas"
-import { deviceLabel, formatMinutes, formatRelative } from "@/lib/format"
+import {
+  deviceLabel,
+  formatMinutes,
+  formatRelative,
+  formatSeconds,
+} from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 interface DeviceRowProps {
@@ -23,16 +29,20 @@ export function DeviceRow({
   onOpen,
 }: DeviceRowProps) {
   const actions = useDeviceActions(device)
+  const reduce = useReducedMotion()
+  const ping = device.latency_median_ms
   const unnamed = !device.name.trim()
   const limit = device.daily_minutes_limit
 
   return (
-    <li
+    <motion.li
+      layout={reduce ? false : "position"}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={onSeen}
       onFocusCapture={onSeen}
       className={cn(
-        "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-3 rounded-2xl border px-4 py-3.5 transition-[background-color,border-color,box-shadow] duration-500",
-        "md:grid-cols-[auto_minmax(0,1fr)_10.5rem_8rem_9.5rem]",
+        "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 gap-y-3 rounded-lg border px-4 py-3.5 transition-[background-color,border-color,box-shadow] duration-500",
+        "md:grid-cols-[auto_minmax(0,1fr)_9rem_4.5rem_6.5rem_9.5rem]",
         highlighted
           ? "border-signal/50 bg-signal-soft shadow-[0_10px_30px_-18px_var(--signal)]"
           : "border-transparent hover:border-border hover:bg-card/70"
@@ -76,41 +86,70 @@ export function DeviceRow({
         </span>
       </button>
 
-      <div className="col-span-3 row-start-2 flex items-center gap-3 md:col-span-1 md:row-start-auto md:flex-col md:items-start md:gap-1">
+      <div className="col-span-3 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 md:col-span-1 md:row-start-auto md:flex-col md:items-start md:gap-1">
         <StatusChip device={device} />
         <span className="text-xs text-muted-foreground">
           Visto {formatRelative(device.last_seen_at)}
+        </span>
+        <span className="tabular font-mono text-xs text-muted-foreground md:hidden">
+          {formatMinutes(device.minutes_today)} hoy
+          {ping !== null ? `, ping ${formatSeconds(ping)}` : ""}
         </span>
       </div>
 
       <div className="hidden text-right md:block">
         <p className="tabular font-mono text-sm">
-          {formatMinutes(device.minutes_today)}
-          {limit ? (
-            <span className="text-muted-foreground"> / {limit} min</span>
-          ) : null}
+          {ping !== null ? formatSeconds(ping) : "—"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {ping !== null ? "ping" : "sin ping"}
+        </p>
+      </div>
+
+      <div className="hidden text-right md:block">
+        <p className="tabular font-mono text-sm whitespace-nowrap">
+          {limit
+            ? `${Math.round(device.minutes_today)} / ${limit} min`
+            : formatMinutes(device.minutes_today)}
         </p>
         <p className="text-xs text-muted-foreground">hoy</p>
       </div>
 
       <div className="col-start-3 row-start-1 flex items-center gap-1 justify-self-end md:col-start-auto md:row-start-auto">
         {device.status === "pending" ? (
-          <Button size="sm" onClick={actions.approve} disabled={actions.busy}>
+          <Button
+            size="sm"
+            variant="signal"
+            onClick={actions.approve}
+            disabled={actions.busy}
+          >
             Aprobar
           </Button>
         ) : device.active ? (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={actions.closeSession}
-            disabled={actions.busy}
-            className="hidden sm:inline-flex"
-          >
-            <Unplug /> Cerrar sesión
-          </Button>
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={actions.closeSession}
+              disabled={actions.busy}
+              className="hidden sm:inline-flex"
+            >
+              <Unplug /> Cerrar sesión
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={actions.closeSession}
+              disabled={actions.busy}
+              aria-label={`Cerrar sesión de ${deviceLabel(device)}`}
+              className="sm:hidden"
+            >
+              <Unplug />
+            </Button>
+          </>
         ) : null}
         <DeviceMenu device={device} actions={actions} />
       </div>
-    </li>
+    </motion.li>
   )
 }

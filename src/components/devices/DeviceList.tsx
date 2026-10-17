@@ -1,6 +1,8 @@
 import { Smartphone } from "lucide-react"
 import { useMemo, useState } from "react"
 
+import { deviceLabel, STATUS_LABEL } from "@/lib/format"
+
 import { DeviceRow } from "@/components/devices/DeviceRow"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useChangeHighlight } from "@/hooks/useChangeHighlight"
@@ -51,7 +53,7 @@ export function DeviceList({
   const [filter, setFilter] = useState<Filter>("all")
   const { changed, acknowledge } = useChangeHighlight(devices)
 
-  const sorted = useMemo(
+  const ranked = useMemo(
     () =>
       [...(devices ?? [])].sort(
         (a, b) =>
@@ -61,6 +63,48 @@ export function DeviceList({
       ),
     [devices]
   )
+
+  // Orden congelado: las filas se actualizan en su sitio y los teléfonos
+  // nuevos entran arriba. Todo se reordena solo en la primera carga, al cambiar
+  // de filtro o cuando ya se vieron todos los cambios (nunca debajo del puntero
+  // de alguien que está a punto de tocar una fila).
+  const [order, setOrder] = useState<number[] | null>(null)
+  const [pendingSeen, setPendingSeen] = useState(0)
+  const desired = ranked.map((d) => d.id)
+  const present = new Set(desired)
+  let nextOrder: number[]
+  if (order === null || (pendingSeen > 0 && changed.size === 0)) {
+    nextOrder = devices ? desired : []
+  } else {
+    const known = new Set(order)
+    nextOrder = [
+      ...desired.filter((id) => !known.has(id)),
+      ...order.filter((id) => present.has(id)),
+    ]
+  }
+  if (devices && order === null) setOrder(nextOrder)
+  else if (
+    order !== null &&
+    (nextOrder.length !== order.length ||
+      nextOrder.some((id, i) => id !== order[i]))
+  ) {
+    setOrder(nextOrder)
+  }
+  if (pendingSeen !== changed.size) setPendingSeen(changed.size)
+
+  const byId = new Map(ranked.map((d) => [d.id, d]))
+  const sorted = nextOrder.flatMap((id) => {
+    const device = byId.get(id)
+    return device ? [device] : []
+  })
+  const announcement = sorted
+    .filter((d) => changed.has(d.id))
+    .map(
+      (d) =>
+        `${deviceLabel(d)}: ${d.active ? "en sesión" : STATUS_LABEL[d.status].toLowerCase()}`
+    )
+    .join(". ")
+
   const active = FILTERS.find((f) => f.id === filter) ?? FILTERS[0]
   const visible = sorted.filter(active.match)
 
@@ -79,7 +123,7 @@ export function DeviceList({
           </p>
         </div>
         <div
-          role="tablist"
+          role="group"
           aria-label="Filtrar teléfonos"
           className="flex max-w-full [scrollbar-width:none] gap-1 overflow-x-auto rounded-full border bg-card/60 p-1"
         >
@@ -89,10 +133,12 @@ export function DeviceList({
             return (
               <button
                 key={f.id}
-                role="tab"
                 type="button"
-                aria-selected={selected}
-                onClick={() => setFilter(f.id)}
+                aria-pressed={selected}
+                onClick={() => {
+                  setFilter(f.id)
+                  setOrder(desired)
+                }}
                 className={cn(
                   "flex h-8 items-center gap-1.5 rounded-full px-3 text-sm whitespace-nowrap transition-colors",
                   selected
@@ -109,6 +155,10 @@ export function DeviceList({
           })}
         </div>
       </div>
+
+      <p className="sr-only" aria-live="polite">
+        {announcement}
+      </p>
 
       {loading ? (
         <ul
@@ -128,7 +178,7 @@ export function DeviceList({
         </ul>
       ) : error ? (
         <div
-          className="rounded-2xl border border-dashed px-6 py-10 text-center"
+          className="rounded-lg border border-dashed px-6 py-10 text-center"
           role="alert"
         >
           <p className="font-medium">No se pudo cargar la lista.</p>
@@ -142,7 +192,7 @@ export function DeviceList({
           </button>
         </div>
       ) : visible.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed px-6 py-14 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed px-6 py-14 text-center">
           <Smartphone
             className="size-8 text-muted-foreground"
             strokeWidth={1.5}

@@ -40,6 +40,11 @@ export function formatMinutes(minutes: number): string {
   return m ? `${h} h ${m} min` : `${h} h`
 }
 
+/** "2,6 s": latencia en segundos con coma decimal. */
+export function formatSeconds(ms: number): string {
+  return `${(ms / 1000).toLocaleString("es-CO", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`
+}
+
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`

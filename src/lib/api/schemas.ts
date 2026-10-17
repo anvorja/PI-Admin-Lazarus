@@ -45,6 +45,8 @@ export const deviceSchema = z.object({
   active: z.boolean(),
   uploads: z.number().int(),
   last_upload_at: z.string().nullable(),
+  /** Mediana de la latencia voz a voz (ms): el "ping" del teléfono. */
+  latency_median_ms: z.number().nullable().optional().default(null),
 })
 export type Device = z.infer<typeof deviceSchema>
 export const devicesSchema = z.array(deviceSchema)

@@ -23,6 +23,7 @@ import {
   formatDateTime,
   formatMinutes,
   formatRelative,
+  formatSeconds,
 } from "@/lib/format"
 
 interface DeviceSheetProps {
@@ -57,14 +58,17 @@ function Latency({ id }: { id: number }) {
     <div className="flex items-end gap-8">
       <div>
         <p className="tabular font-mono text-4xl font-medium tracking-tight">
-          {(median_ms / 1000).toFixed(1)}
+          {(median_ms / 1000).toLocaleString("es-CO", {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1,
+          })}
           <span className="ml-1 text-lg text-muted-foreground">s</span>
         </p>
         <p className="text-xs text-muted-foreground">mediana voz a voz</p>
       </div>
       <div>
         <p className="tabular font-mono text-xl">
-          {p90_ms !== null ? `${(p90_ms / 1000).toFixed(1)} s` : "?"}
+          {p90_ms !== null ? formatSeconds(p90_ms) : "Sin datos"}
         </p>
         <p className="text-xs text-muted-foreground">p90</p>
       </div>
@@ -171,20 +175,27 @@ function Body({ device }: { device: Device }) {
   return (
     <>
       <SheetHeader className="gap-3 px-6 pt-6 pr-14 pb-5">
-        <div className="self-start">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <SheetTitle className="text-2xl font-semibold tracking-tight">
+            {deviceLabel(device)}
+          </SheetTitle>
           <StatusChip device={device} />
         </div>
-        <SheetTitle className="text-2xl font-semibold tracking-tight">
-          {deviceLabel(device)}
-        </SheetTitle>
-        <SheetDescription className="font-mono text-xs">
-          {device.model || "Modelo desconocido"}, Android{" "}
-          {device.android || "?"}, app {device.app_version || "?"}. IP{" "}
-          {device.last_ip || "?"}, visto {formatRelative(device.last_seen_at)}.
+        <SheetDescription>
+          <span className="font-mono text-xs">
+            {device.model || "Modelo desconocido"}, Android{" "}
+            {device.android || "?"}, app {device.app_version || "?"}, IP{" "}
+            {device.last_ip || "?"}
+          </span>
+          . Visto {formatRelative(device.last_seen_at)}.
         </SheetDescription>
         <div className="flex flex-wrap gap-2 pt-1">
           {device.status === "pending" ? (
-            <Button onClick={actions.approve} disabled={actions.busy}>
+            <Button
+              variant="signal"
+              onClick={actions.approve}
+              disabled={actions.busy}
+            >
               Aprobar
             </Button>
           ) : null}
