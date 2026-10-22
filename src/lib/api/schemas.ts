@@ -79,3 +79,42 @@ export interface DeviceUpdate {
   daily_minutes_limit?: number
   upload_requested?: boolean
 }
+
+/**
+ * Perfil de ruta curado (HU-022), el mismo contrato que `RouteProfile` del
+ * backend: se valida aquí antes de enviarlo para dar el error exacto.
+ */
+export const routePointSchema = z
+  .object({
+    name: z.string().min(1).max(80),
+    lat: z.number().min(-90).max(90),
+    lon: z.number().min(-180).max(180),
+    instruction: z.string().max(200).default(""),
+    risk: z.enum(["low", "medium", "high"]).default("low"),
+    crossing: z
+      .enum(["traffic_light", "zebra", "uncontrolled"])
+      .nullable()
+      .default(null),
+    approach_m: z.number().positive().max(300).default(60),
+    arrive_m: z.number().positive().max(100).default(15),
+  })
+  .refine((p) => p.arrive_m < p.approach_m, {
+    message: "arrive_m debe ser menor que approach_m",
+    path: ["arrive_m"],
+  })
+
+export const routeProfileSchema = z.object({
+  slug: z
+    .string()
+    .max(60)
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "solo minúsculas, números y guiones"),
+  name: z.string().min(1).max(120),
+  origin: z.string().min(1).max(80),
+  destination: z.string().min(1).max(80),
+  direction: z.enum(["outbound", "return"]),
+  family: z.enum(["A", "B", "other"]).default("other"),
+  validated_in_field: z.boolean().default(false),
+  points: z.array(routePointSchema).min(2).max(60),
+})
+export type RouteProfile = z.infer<typeof routeProfileSchema>
+export const routeProfilesSchema = z.array(routeProfileSchema)
