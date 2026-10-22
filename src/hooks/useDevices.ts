@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
+  clearDeviceLogs,
   closeDeviceSession,
   deleteDevice,
   fetchDeviceLogs,
@@ -50,6 +51,17 @@ export function useDeleteDevice() {
       client.setQueryData<Device[]>(devicesKey, (list) =>
         list?.filter((d) => d.id !== id)
       )
+    },
+  })
+}
+
+export function useClearLogs() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => clearDeviceLogs(id),
+    onSettled: (_, __, id) => {
+      client.invalidateQueries({ queryKey: ["device", id, "logs"] })
+      client.invalidateQueries({ queryKey: devicesKey })
     },
   })
 }

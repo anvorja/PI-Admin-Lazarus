@@ -1,7 +1,8 @@
-import { Download, FileText, FileDown } from "lucide-react"
+import { Download, Eraser, FileText, FileDown } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { toast } from "sonner"
 
+import { ClearLogsDialog } from "@/components/devices/DeviceDialogs"
 import { StatusChip } from "@/components/devices/StatusChip"
 import { Button } from "@/components/ui/button"
 import {
@@ -81,7 +82,9 @@ function Latency({ id }: { id: number }) {
 
 function Logs({ device }: { device: Device }) {
   const logs = useDeviceLogs(device.id)
+  const actions = useDeviceActions(device)
   const [downloading, setDownloading] = useState(false)
+  const [confirming, setConfirming] = useState(false)
   if (logs.isPending) return <Skeleton className="h-20 w-full" />
   if (logs.isError) {
     return <p className="text-sm text-muted-foreground">{logs.error.message}</p>
@@ -125,9 +128,26 @@ function Logs({ device }: { device: Device }) {
         Última subida {formatRelative(device.last_upload_at)}. Llevan voz
         transcrita y ubicaciones: guárdalos fuera de repositorios públicos.
       </p>
-      <Button onClick={download} disabled={downloading} className="self-start">
-        <Download /> {downloading ? "Preparando…" : "Descargar .zip"}
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={download} disabled={downloading}>
+          <Download /> {downloading ? "Preparando…" : "Descargar .zip"}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => setConfirming(true)}
+          disabled={actions.busy}
+        >
+          <Eraser /> Limpiar logs
+        </Button>
+      </div>
+      {confirming ? (
+        <ClearLogsDialog
+          device={device}
+          open
+          onOpenChange={setConfirming}
+          onConfirm={actions.clearLogs}
+        />
+      ) : null}
     </div>
   )
 }

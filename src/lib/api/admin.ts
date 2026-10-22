@@ -59,6 +59,13 @@ export function fetchDeviceLogs(id: number): Promise<DeviceLogs> {
   return requestJson(`/devices/${id}/logs`, deviceLogsSchema)
 }
 
+/** Borra los logs que subió el teléfono; devuelve cuántos fragmentos eran. */
+export async function clearDeviceLogs(id: number): Promise<number> {
+  const response = await request(`/devices/${id}/logs`, { method: "DELETE" })
+  const body = (await response.json()) as { deleted?: number }
+  return body.deleted ?? 0
+}
+
 /** Descarga el .zip con los logs unidos del teléfono. */
 export async function downloadDeviceLogs(id: number): Promise<void> {
   const response = await request(`/devices/${id}/logs.zip`)
