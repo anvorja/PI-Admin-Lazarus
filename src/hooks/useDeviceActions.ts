@@ -1,6 +1,7 @@
 import { toast } from "sonner"
 
 import {
+  useClearLogs,
   useCloseSession,
   useDeleteDevice,
   useUpdateDevice,
@@ -13,6 +14,7 @@ export function useDeviceActions(device: Device) {
   const update = useUpdateDevice()
   const close = useCloseSession()
   const remove = useDeleteDevice()
+  const clear = useClearLogs()
   const label = deviceLabel(device)
 
   const patch = (body: DeviceUpdate, done: string) =>
@@ -25,7 +27,11 @@ export function useDeviceActions(device: Device) {
     )
 
   return {
-    busy: update.isPending || close.isPending || remove.isPending,
+    busy:
+      update.isPending ||
+      close.isPending ||
+      remove.isPending ||
+      clear.isPending,
     approve: () => patch({ status: "approved" }, `${label} aprobado`),
     disable: () => patch({ status: "disabled" }, `${label} deshabilitado`),
     enable: () => patch({ status: "approved" }, `${label} habilitado`),
@@ -42,6 +48,11 @@ export function useDeviceActions(device: Device) {
           ? "Logs pedidos: llegan cuando termine su sesión"
           : "Logs pedidos: llegan cuando empiece su próxima sesión"
       ),
+    clearLogs: () =>
+      clear.mutate(device.id, {
+        onSuccess: () => toast.success(`Logs de ${label} borrados`),
+        onError: (error) => toast.error(error.message),
+      }),
     closeSession: () =>
       close.mutate(device.id, {
         onSuccess: (closed) =>

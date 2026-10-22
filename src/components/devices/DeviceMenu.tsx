@@ -1,6 +1,7 @@
 import {
   Ban,
   CircleCheck,
+  Eraser,
   FileDown,
   MoreHorizontal,
   Pencil,
@@ -11,6 +12,7 @@ import {
 import { useState } from "react"
 
 import {
+  ClearLogsDialog,
   DeleteDialog,
   LimitDialog,
   RenameDialog,
@@ -27,7 +29,7 @@ import type { useDeviceActions } from "@/hooks/useDeviceActions"
 import type { Device } from "@/lib/api/schemas"
 import { deviceLabel } from "@/lib/format"
 
-type Dialog = "rename" | "limit" | "delete" | null
+type Dialog = "rename" | "limit" | "clear" | "delete" | null
 
 interface DeviceMenuProps {
   device: Device
@@ -67,6 +69,12 @@ export function DeviceMenu({ device, actions }: DeviceMenuProps) {
             <FileDown />{" "}
             {device.upload_requested ? "Logs ya pedidos" : "Pedir logs"}
           </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={device.uploads === 0}
+            onSelect={() => setDialog("clear")}
+          >
+            <Eraser /> Limpiar logs
+          </DropdownMenuItem>
           {device.active ? (
             <DropdownMenuItem onSelect={actions.closeSession}>
               <Unplug /> Cerrar sesión
@@ -105,6 +113,14 @@ export function DeviceMenu({ device, actions }: DeviceMenuProps) {
           open
           onOpenChange={close}
           onSave={actions.setLimit}
+        />
+      ) : null}
+      {dialog === "clear" ? (
+        <ClearLogsDialog
+          device={device}
+          open
+          onOpenChange={close}
+          onConfirm={actions.clearLogs}
         />
       ) : null}
       {dialog === "delete" ? (
