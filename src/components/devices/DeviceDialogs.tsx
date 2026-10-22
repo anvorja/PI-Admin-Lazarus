@@ -140,6 +140,36 @@ export function LimitDialog({
   )
 }
 
+export function ClearLogsDialog({
+  device,
+  open,
+  onOpenChange,
+  onConfirm,
+}: DialogProps & { onConfirm: () => void }) {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            ¿Borrar los logs de "{deviceLabel(device)}"?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Se borran del servidor todos los logs que subió este teléfono. El
+            teléfono, su aprobación y sus sesiones se conservan. No se puede
+            deshacer: descarga el .zip antes si lo necesitas.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={onConfirm}>
+            Borrar logs
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
 export function DeleteDialog({
   device,
   open,
