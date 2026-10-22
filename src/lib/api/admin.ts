@@ -1,15 +1,18 @@
-/** Operaciones del panel sobre el servicio, los teléfonos y sus logs. */
+/** Operaciones del panel sobre el servicio, los teléfonos, sus logs y las rutas. */
 import { request, requestJson } from "./client"
 import {
   deviceLogsSchema,
   deviceSchema,
   deviceSessionsSchema,
   devicesSchema,
+  routeProfileSchema,
+  routeProfilesSchema,
   settingsSchema,
   type Device,
   type DeviceLogs,
   type DeviceSession,
   type DeviceUpdate,
+  type RouteProfile,
   type Schedule,
   type ServiceSettings,
 } from "./schemas"
@@ -77,4 +80,21 @@ export async function downloadDeviceLogs(id: number): Promise<void> {
   link.download = name
   link.click()
   URL.revokeObjectURL(url)
+}
+
+/** Perfiles de ruta curados (HU-022): viven en la base de datos del backend. */
+export function fetchRoutes(): Promise<RouteProfile[]> {
+  return requestJson("/routes", routeProfilesSchema)
+}
+
+/** Crea o reemplaza el perfil con su slug. */
+export function saveRoute(profile: RouteProfile): Promise<RouteProfile> {
+  return requestJson(`/routes/${profile.slug}`, routeProfileSchema, {
+    method: "PUT",
+    body: JSON.stringify(profile),
+  })
+}
+
+export async function deleteRoute(slug: string): Promise<void> {
+  await request(`/routes/${slug}`, { method: "DELETE" })
 }
