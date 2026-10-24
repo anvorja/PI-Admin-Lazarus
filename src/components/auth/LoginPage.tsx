@@ -3,13 +3,16 @@ import { Power } from "lucide-react"
 import { useId, useState, type FormEvent } from "react"
 
 import { Wordmark } from "@/components/brand/Wordmark"
+import Radar from "@/components/Radar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/hooks/useAuth"
+import { useTheme } from "@/hooks/useTheme"
 
 export function LoginPage() {
   const { login } = useAuth()
+  const dark = useTheme().resolvedTheme === "dark"
   const navigate = useNavigate()
   const id = useId()
   const [username, setUsername] = useState("")
@@ -38,20 +41,35 @@ export function LoginPage() {
         aria-hidden
         className="relative hidden overflow-hidden border-r bg-card/40 lg:flex lg:flex-col lg:justify-between lg:p-12"
       >
-        <Wordmark />
-        <div className="relative mx-auto grid size-[min(38vw,30rem)] place-items-center">
-          {[0, 1, 2, 3].map((ring) => (
-            <span
-              key={ring}
-              className="absolute rounded-full border border-signal/20"
-              style={{ inset: `${ring * 12}%` }}
-            />
-          ))}
-          <span className="grid size-[28%] place-items-center rounded-full border border-signal/60 bg-signal-soft text-signal shadow-[0_30px_80px_-30px_var(--signal)]">
+        {/* El servicio como "la conexión": el radar barre mientras el
+            encendido espera al centro. Con movimiento reducido queda quieto. */}
+        <div className="absolute inset-0">
+          <Radar
+            color={dark ? "#4fd88e" : "#006934"}
+            lightMode={!dark}
+            mode="sweep"
+            speed={0.55}
+            trail={0.3}
+            scale={0.62}
+            ringCount={5}
+            spokeCount={12}
+            targets={4}
+            clutter={0.18}
+            glow={dark ? 0.85 : 0.4}
+            gridOpacity={dark ? 0.75 : 0.55}
+            grain={0.015}
+            fade={0.45}
+          />
+        </div>
+        <div className="pointer-events-none absolute inset-0 grid place-items-center">
+          <span className="grid size-[clamp(6.5rem,11vw,8.5rem)] place-items-center rounded-full border border-signal/50 bg-background/70 text-signal shadow-[0_24px_60px_-28px_var(--signal)] backdrop-blur-sm">
             <Power className="size-1/2" strokeWidth={1.5} />
           </span>
         </div>
-        <p className="max-w-[46ch] text-sm text-muted-foreground">
+        <div className="relative">
+          <Wordmark />
+        </div>
+        <p className="relative max-w-[46ch] text-sm text-muted-foreground">
           Abre y cierra el servicio de las jornadas de campo, aprueba los
           teléfonos del piloto y descarga sus registros.
         </p>
