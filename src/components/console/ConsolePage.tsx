@@ -1,6 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router"
 
 import { AppHeader } from "@/components/console/AppHeader"
+import { CapacitySection } from "@/components/console/CapacitySection"
 import { RoutesSection } from "@/components/console/RoutesSection"
 import {
   ScheduleSection,
@@ -12,7 +13,7 @@ import { useDevices } from "@/hooks/useDevices"
 
 const route = getRouteApi("/")
 
-/** La consola: servicio, horario y rutas a la izquierda; teléfonos a la derecha. */
+/** La consola: servicio, horario y rutas a la izquierda; teléfonos a la derecha; capacidad abajo. */
 export function ConsolePage() {
   const { dispositivo } = route.useSearch()
   const navigate = route.useNavigate()
@@ -53,6 +54,12 @@ export function ConsolePage() {
           className="h-fit rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-start-1 lg:row-start-3"
         >
           <RoutesSection />
+        </section>
+        <section
+          aria-label="Capacidad"
+          className="min-w-0 rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-span-2 lg:row-start-4"
+        >
+          <CapacitySection />
         </section>
       </main>
       <DeviceSheet device={selected} onClose={close} />
