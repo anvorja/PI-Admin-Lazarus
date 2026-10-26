@@ -19,6 +19,7 @@ import { downloadDeviceLogs } from "@/lib/api/admin"
 import type { Device } from "@/lib/api/schemas"
 import {
   closeReason,
+  networkLabel,
   deviceLabel,
   formatBytes,
   formatDateTime,
@@ -180,6 +181,8 @@ function Sessions({ id }: { id: number }) {
           </span>
           <span className="text-xs text-muted-foreground">
             {closeReason(s.close_code, s.ended_at !== null)}
+            {networkLabel(s.carrier, s.transport) &&
+              ` · ${networkLabel(s.carrier, s.transport)}`}
           </span>
           <span className="text-right font-mono text-xs text-muted-foreground">
             {s.ip}
