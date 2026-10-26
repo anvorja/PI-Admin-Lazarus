@@ -1,10 +1,11 @@
-/** Operaciones del panel sobre el servicio, los teléfonos, sus logs y las rutas. */
+/** Operaciones del panel sobre el servicio, los teléfonos, sus logs, las rutas y la capacidad. */
 import { request, requestJson } from "./client"
 import {
   deviceLogsSchema,
   deviceSchema,
   deviceSessionsSchema,
   devicesSchema,
+  metricsSchema,
   routeProfileSchema,
   routeProfilesSchema,
   settingsSchema,
@@ -12,6 +13,7 @@ import {
   type DeviceLogs,
   type DeviceSession,
   type DeviceUpdate,
+  type Metrics,
   type RouteProfile,
   type Schedule,
   type ServiceSettings,
@@ -97,4 +99,9 @@ export function saveRoute(profile: RouteProfile): Promise<RouteProfile> {
 
 export async function deleteRoute(slug: string): Promise<void> {
   await request(`/routes/${slug}`, { method: "DELETE" })
+}
+
+/** CPU, RAM, sesiones y tráfico del backend en las últimas `hours` horas. */
+export function fetchMetrics(hours: number): Promise<Metrics> {
+  return requestJson(`/metrics?hours=${hours}`, metricsSchema)
 }
