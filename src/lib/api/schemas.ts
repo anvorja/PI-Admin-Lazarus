@@ -58,6 +58,9 @@ export const deviceSessionSchema = z.object({
   duration_s: z.number(),
   close_code: z.number().int().nullable(),
   ip: z.string(),
+  /** Red al abrir la sesión; vacíos si la app es anterior o no la informó. */
+  carrier: z.string().optional().default(""),
+  transport: z.string().optional().default(""),
 })
 export type DeviceSession = z.infer<typeof deviceSessionSchema>
 export const deviceSessionsSchema = z.array(deviceSessionSchema)
@@ -118,3 +121,38 @@ export const routeProfileSchema = z.object({
 })
 export type RouteProfile = z.infer<typeof routeProfileSchema>
 export const routeProfilesSchema = z.array(routeProfileSchema)
+
+const platformSummarySchema = z.object({
+  samples: z.number().int(),
+  cpu_avg: z.number().optional(),
+  cpu_max: z.number().optional(),
+  rss_max_mb: z.number().optional(),
+  sessions_max: z.number().int().optional(),
+  loop_lag_max_ms: z.number().optional(),
+  /** Estimaciones: solo existen si hubo sesiones (y, la RAM, también reposo). */
+  cpu_per_session: z.number().optional(),
+  mb_per_session: z.number().optional(),
+  kbps_per_session: z.number().optional(),
+})
+export type PlatformSummary = z.infer<typeof platformSummarySchema>
+
+const metricPointSchema = z.object({
+  ts: z.string(),
+  platform: z.string(),
+  cpu_pct: z.number(),
+  rss_mb: z.number(),
+  active_sessions: z.number().int(),
+  kbps_up: z.number(),
+  kbps_down: z.number(),
+  loop_lag_ms: z.number(),
+})
+export type MetricPoint = z.infer<typeof metricPointSchema>
+
+/** Capacidad del servidor (CPU, RAM, sesiones, tráfico), por plataforma. */
+export const metricsSchema = z.object({
+  hours: z.number().int(),
+  live_sessions: z.number().int(),
+  summary: z.record(z.string(), platformSummarySchema),
+  series: z.array(metricPointSchema),
+})
+export type Metrics = z.infer<typeof metricsSchema>
