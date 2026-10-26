@@ -82,6 +82,21 @@ export function closeReason(code: number | null, ended: boolean): string {
   }
 }
 
+const TRANSPORT_LABEL: Record<string, string> = {
+  wifi: "Wi-Fi",
+  cellular: "Datos",
+  other: "Otra red",
+  none: "Sin red",
+}
+
+/** "Claro · Datos", "Wi-Fi", o "" si la app no informó la red. */
+export function networkLabel(carrier: string, transport: string): string {
+  const kind = TRANSPORT_LABEL[transport] ?? ""
+  // El operador solo importa con datos móviles: en Wi-Fi no es la red en uso.
+  if (transport === "wifi") return kind
+  return [carrier, kind].filter(Boolean).join(" · ")
+}
+
 /** Nombre visible: el seudónimo, o el modelo mientras no tenga uno. */
 export function deviceLabel(device: { name: string; model: string }): string {
   return device.name.trim() || device.model || "Teléfono sin nombre"

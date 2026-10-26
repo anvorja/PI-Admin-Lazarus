@@ -58,6 +58,9 @@ export const deviceSessionSchema = z.object({
   duration_s: z.number(),
   close_code: z.number().int().nullable(),
   ip: z.string(),
+  /** Red al abrir la sesión; vacíos si la app es anterior o no la informó. */
+  carrier: z.string().optional().default(""),
+  transport: z.string().optional().default(""),
 })
 export type DeviceSession = z.infer<typeof deviceSessionSchema>
 export const deviceSessionsSchema = z.array(deviceSessionSchema)
