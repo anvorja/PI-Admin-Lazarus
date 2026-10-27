@@ -1,4 +1,3 @@
-import { CalendarClock } from "lucide-react"
 import { useId, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -8,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import type { Schedule } from "@/lib/api/schemas"
 import { cn } from "@/lib/utils"
 
-const DAYS = [
+export const DAYS = [
   { value: 0, short: "L", long: "lunes" },
   { value: 1, short: "M", long: "martes" },
   { value: 2, short: "X", long: "miércoles" },
@@ -73,7 +72,6 @@ export function ScheduleEditor({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-3">
-          <CalendarClock className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
           <div>
             <Label htmlFor={`${id}-enabled`} className="text-base font-medium">
               Solo en el horario de las jornadas
