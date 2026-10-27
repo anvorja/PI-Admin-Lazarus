@@ -1,13 +1,16 @@
+import { CalendarClock, ChevronDown } from "lucide-react"
+import { Collapsible } from "radix-ui"
+import { useState } from "react"
 import { toast } from "sonner"
 
 import { PowerControl } from "@/components/console/PowerControl"
-import { ScheduleEditor } from "@/components/console/ScheduleEditor"
+import { DAYS, ScheduleEditor } from "@/components/console/ScheduleEditor"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   useServiceSettings,
   useUpdateSettings,
 } from "@/hooks/useServiceSettings"
-import type { Device } from "@/lib/api/schemas"
+import type { Device, Schedule } from "@/lib/api/schemas"
 
 interface ServicePanelProps {
   devices: Device[] | undefined
@@ -89,25 +92,73 @@ export function ServicePanel({ devices }: ServicePanelProps) {
 }
 
 /** Horario de las jornadas (en el celular va después de la lista). */
+const SCHEDULE_OPEN_KEY = "lazarus-panel-horario-abierto"
+
+function readScheduleOpen(): boolean {
+  try {
+    return localStorage.getItem(SCHEDULE_OPEN_KEY) === "1"
+  } catch {
+    return false
+  }
+}
+
+/** Lo que se ve con la sección plegada: si el horario rige y cuándo. */
+function scheduleSummary(schedule: Schedule): string {
+  if (!schedule.enabled) return "Desactivado: el servicio abre a cualquier hora"
+  const days = DAYS.filter((d) => schedule.days.includes(d.value))
+    .map((d) => d.long)
+    .join(", ")
+  return `${days || "Ningún día"}, de ${schedule.from} a ${schedule.to}`
+}
+
+/** El horario se usa poco: va plegado y el panel recuerda si se dejó abierto. */
 export function ScheduleSection() {
   const settings = useServiceSettings()
   const update = useUpdateSettings()
-  if (!settings.data) {
-    return settings.isPending ? <Skeleton className="h-64 w-full" /> : null
+  const [open, setOpen] = useState(readScheduleOpen)
+
+  const toggle = (next: boolean) => {
+    setOpen(next)
+    try {
+      localStorage.setItem(SCHEDULE_OPEN_KEY, next ? "1" : "0")
+    } catch {
+      // Sin almacenamiento solo se pierde la preferencia.
+    }
   }
+
+  if (!settings.data) {
+    return settings.isPending ? <Skeleton className="h-12 w-full" /> : null
+  }
+  const schedule = settings.data.schedule
   return (
-    <ScheduleEditor
-      schedule={settings.data.schedule}
-      saving={update.isPending}
-      onSave={(schedule) =>
-        update.mutate(
-          { schedule },
-          {
-            onSuccess: () => toast.success("Horario guardado"),
-            onError: (error) => toast.error(error.message),
+    <Collapsible.Root open={open} onOpenChange={toggle}>
+      <Collapsible.Trigger className="group flex w-full items-start gap-3 rounded-md text-left outline-offset-4">
+        <CalendarClock className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+        <span className="min-w-0 flex-1">
+          <span className="block text-base font-medium">
+            Horario de las jornadas
+          </span>
+          <span className="mt-1 block text-sm text-muted-foreground">
+            {scheduleSummary(schedule)}
+          </span>
+        </span>
+        <ChevronDown className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+      </Collapsible.Trigger>
+      <Collapsible.Content className="pt-6">
+        <ScheduleEditor
+          schedule={schedule}
+          saving={update.isPending}
+          onSave={(next) =>
+            update.mutate(
+              { schedule: next },
+              {
+                onSuccess: () => toast.success("Horario guardado"),
+                onError: (error) => toast.error(error.message),
+              }
+            )
           }
-        )
-      }
-    />
+        />
+      </Collapsible.Content>
+    </Collapsible.Root>
   )
 }
