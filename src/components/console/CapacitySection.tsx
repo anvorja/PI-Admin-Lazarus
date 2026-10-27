@@ -166,7 +166,13 @@ function Comparison({ metrics }: { metrics: Metrics }) {
   const platforms = Object.keys(metrics.summary)
   return (
     <div className="overflow-x-auto rounded-lg border">
-      <table className="w-full min-w-[420px] text-sm">
+      {/* Con una sola plataforma cabe en el teléfono; con varias, se desplaza. */}
+      <table
+        className={cn(
+          "w-full text-sm",
+          platforms.length > 1 && "min-w-[420px]"
+        )}
+      >
         <thead>
           <tr className="border-b text-left text-xs text-muted-foreground">
             <th scope="col" className="px-4 py-2 font-medium">
@@ -203,7 +209,7 @@ function Comparison({ metrics }: { metrics: Metrics }) {
               {platforms.map((platform) => (
                 <td
                   key={platform}
-                  className="px-4 py-2 text-right font-mono tabular-nums"
+                  className="px-4 py-2 text-right font-mono whitespace-nowrap tabular-nums"
                 >
                   {row.get(metrics.summary[platform])}
                 </td>
@@ -307,7 +313,7 @@ export function CapacitySection() {
                 </li>
               ))}
             </ul>
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-6 @lg:grid-cols-2 @6xl:grid-cols-4">
               <LineChart
                 title="CPU"
                 unit="%"
