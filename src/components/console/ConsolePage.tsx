@@ -13,7 +13,7 @@ import { useDevices } from "@/hooks/useDevices"
 
 const route = getRouteApi("/")
 
-/** La consola: servicio, horario y rutas a la izquierda; teléfonos a la derecha; capacidad abajo. */
+/** La consola: servicio, horario y rutas a la izquierda; teléfonos y capacidad a la derecha. */
 export function ConsolePage() {
   const { dispositivo } = route.useSearch()
   const navigate = route.useNavigate()
@@ -26,41 +26,48 @@ export function ConsolePage() {
   return (
     <div className="min-h-dvh">
       <AppHeader />
-      <main className="mx-auto grid max-w-[1400px] grid-cols-[minmax(0,1fr)] gap-6 px-4 py-6 sm:py-8 lg:grid-cols-[400px_minmax(0,1fr)] lg:grid-rows-[auto_auto_1fr] lg:gap-x-10 lg:gap-y-6 lg:px-8 lg:py-10">
+      {/* Dos columnas independientes en escritorio, para que la lista corta de
+          teléfonos no deje un hueco. En el teléfono es una sola columna con lo
+          que más se mira arriba: servicio, teléfonos, capacidad, horario y rutas. */}
+      <main className="mx-auto flex max-w-[1400px] flex-col gap-6 px-4 py-6 sm:py-8 lg:grid lg:grid-cols-[400px_minmax(0,1fr)] lg:items-start lg:gap-10 lg:px-8 lg:py-10">
         <h1 className="sr-only">Consola del piloto</h1>
-        <section
-          aria-label="Servicio"
-          className="rounded-lg border bg-card/70 p-6 shadow-[0_24px_60px_-40px_oklch(0.2_0.04_260/50%)] sm:p-8 lg:col-start-1 lg:row-start-1"
-        >
-          <ServicePanel devices={devices.data} />
-        </section>
-        <div className="min-w-0 lg:col-start-2 lg:row-span-3 lg:row-start-1">
-          <DeviceList
-            devices={devices.data}
-            loading={devices.isPending}
-            error={devices.error}
-            onRetry={() => void devices.refetch()}
-            onOpen={open}
-          />
+        <div className="contents lg:flex lg:flex-col lg:gap-6">
+          <section
+            aria-label="Servicio"
+            className="order-1 rounded-lg border bg-card/70 p-6 shadow-[0_24px_60px_-40px_oklch(0.2_0.04_260/50%)] sm:p-8 lg:order-none"
+          >
+            <ServicePanel devices={devices.data} />
+          </section>
+          <section
+            aria-label="Horario"
+            className="order-4 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+          >
+            <ScheduleSection />
+          </section>
+          <section
+            aria-label="Rutas"
+            className="order-5 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+          >
+            <RoutesSection />
+          </section>
         </div>
-        <section
-          aria-label="Horario"
-          className="h-fit rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-start-1 lg:row-start-2"
-        >
-          <ScheduleSection />
-        </section>
-        <section
-          aria-label="Rutas"
-          className="h-fit rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-start-1 lg:row-start-3"
-        >
-          <RoutesSection />
-        </section>
-        <section
-          aria-label="Capacidad"
-          className="min-w-0 rounded-lg border bg-card/70 p-6 sm:p-8 lg:col-span-2 lg:row-start-4"
-        >
-          <CapacitySection />
-        </section>
+        <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-10">
+          <div className="order-2 min-w-0 lg:order-none">
+            <DeviceList
+              devices={devices.data}
+              loading={devices.isPending}
+              error={devices.error}
+              onRetry={() => void devices.refetch()}
+              onOpen={open}
+            />
+          </div>
+          <section
+            aria-label="Capacidad"
+            className="@container order-3 min-w-0 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+          >
+            <CapacitySection />
+          </section>
+        </div>
       </main>
       <DeviceSheet device={selected} onClose={close} />
     </div>

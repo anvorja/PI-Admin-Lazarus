@@ -1,9 +1,15 @@
 import { ChevronRight, Smartphone, Unplug } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
+import { useRef, useState } from "react"
 
 import { DeviceMenu } from "@/components/devices/DeviceMenu"
 import { StatusChip } from "@/components/devices/StatusChip"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { useDeviceActions } from "@/hooks/useDeviceActions"
 import type { Device } from "@/lib/api/schemas"
 import {
@@ -80,10 +86,7 @@ export function DeviceRow({
           </span>
           <ChevronRight className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
         </span>
-        <span className="mt-0.5 block truncate font-mono text-xs text-muted-foreground">
-          {device.model || "Modelo desconocido"}, Android{" "}
-          {device.android || "?"}, app {device.app_version || "?"}
-        </span>
+        <DeviceSpecs device={device} />
       </button>
 
       <div className="col-span-3 row-start-2 flex flex-wrap items-center gap-x-3 gap-y-1 @3xl:col-span-1 @3xl:row-start-auto @3xl:flex-col @3xl:items-start @3xl:gap-1">
@@ -159,5 +162,44 @@ export function DeviceRow({
         <DeviceMenu device={device} actions={actions} />
       </div>
     </motion.li>
+  )
+}
+
+/** Modelo, Android, versión de la app e IP. En escritorio la línea se corta
+ * y el tooltip la muestra completa solo si no cabe; en el teléfono, donde no
+ * hay tooltip, se parte en dos líneas. */
+function DeviceSpecs({ device }: { device: Device }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const [open, setOpen] = useState(false)
+  const specs = [
+    device.model || "Modelo desconocido",
+    `Android ${device.android || "?"}`,
+    `app ${device.app_version || "?"}`,
+    ...(device.last_ip ? [`IP ${device.last_ip}`] : []),
+  ]
+
+  const cut = () => {
+    const el = ref.current
+    return el !== null && el.scrollWidth > el.clientWidth
+  }
+
+  return (
+    <Tooltip open={open} onOpenChange={(next) => setOpen(next && cut())}>
+      <TooltipTrigger asChild>
+        <span
+          ref={ref}
+          className="mt-0.5 block font-mono text-xs break-words text-muted-foreground sm:truncate"
+        >
+          {specs.join(", ")}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" align="start">
+        <ul className="font-mono">
+          {specs.map((spec) => (
+            <li key={spec}>{spec}</li>
+          ))}
+        </ul>
+      </TooltipContent>
+    </Tooltip>
   )
 }
