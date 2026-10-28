@@ -27,6 +27,13 @@ import { useEffect, useMemo, useState, type ReactNode } from "react"
 
 import { BranchedMenu, type BranchedMenuItem } from "@/components/BranchedMenu"
 import { Button } from "@/components/ui/button"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import type { RouteProfile } from "@/lib/api/schemas"
 import { cn } from "@/lib/utils"
 
@@ -466,72 +473,123 @@ function LegendRow({ legend }: { legend: Legend }) {
       )
   }
 }
-/**
- * Guía del editor de rutas. Va en la columna del formulario, junto a los campos
- * que explica, y nunca sobre el mapa. Muestra el tema del campo que la persona
- * enfoca; «Pasos» abre el menú ramificado con todo el recorrido de la guía, y se
- * puede plegar a una sola línea.
- */
-export function RouteGuide({
-  progress,
-  active,
-  onActive,
-  onShow,
-  onClose,
-  className,
-}: {
+interface GuideProps {
   progress: GuideProgress
   active: string
   onActive: (value: string) => void
   /** Lleva al campo del tema en el editor. */
   onShow: (value: string) => void
   onClose: () => void
+  /** En el teléfono: una barra fija y la explicación en una hoja inferior. */
+  mobile?: boolean
   className?: string
-}) {
-  const [folded, setFolded] = useState(false)
-  const [showSteps, setShowSteps] = useState(false)
-  const [open, setOpen] = useState<number[]>(() => [sectionOf(active)])
+}
 
-  // Al pasar a otra sección, el menú abre esa y pliega las demás.
-  const activeSection = sectionOf(active)
-  const [lastSection, setLastSection] = useState(activeSection)
-  if (activeSection !== lastSection) {
-    setLastSection(activeSection)
-    setOpen([activeSection])
-  }
+/**
+ * Guía del editor de rutas. Va en la columna del formulario, junto a los campos
+ * que explica, y nunca sobre el mapa. Muestra el tema del campo que la persona
+ * enfoca; «Pasos» abre el menú ramificado con todo el recorrido de la guía.
+ * En pantalla ancha se pliega a una línea; en el teléfono es una barra fija
+ * que abre la explicación en una hoja desde abajo.
+ */
+export function RouteGuide(props: GuideProps) {
+  const { progress, active, onClose, mobile, className } = props
+  const [folded, setFolded] = useState(false)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [showSteps, setShowSteps] = useState(false)
 
   const doneCount = TOPICS.filter((t) => t.done(progress)).length
   const topic = TOPICS.find((t) => t.value === active) ?? TOPICS[0]
-  const isDone = topic.done(progress)
-  const next = nextPending(progress, topic.value)
-  const nextTopic = TOPICS.find((t) => t.value === next)
+  const bodyId = "guia-ruta-contenido"
 
-  const items = useMemo<BranchedMenuItem[]>(
-    () =>
-      GUIDE.map((section) => ({
-        label: section.label,
-        meta: `${section.topics.filter((t) => t.done(progress)).length}/${section.topics.length}`,
-        children: section.topics.map((t) => {
-          const Icon = t.done(progress) ? Check : t.icon
-          return {
-            value: t.value,
-            label: t.label,
-            icon: (
-              <Icon
-                className={cn(
-                  "size-4",
-                  t.done(progress) && t.value !== active && "text-signal"
-                )}
-                strokeWidth={1.8}
-              />
-            ),
-          }
-        }),
-      })),
-    [progress, active]
+  const body = (
+    <GuideBody
+      {...props}
+      showSteps={showSteps}
+      onShowSteps={setShowSteps}
+      // En el teléfono la hoja se cierra para dejar ver el campo.
+      beforeShow={mobile ? () => setSheetOpen(false) : undefined}
+    />
   )
 
-  const bodyId = "guia-ruta-contenido"
+  if (mobile) {
+    const openSheet = (steps: boolean) => {
+      setShowSteps(steps)
+      setSheetOpen(true)
+    }
+    return (
+      <MotionConfig reducedMotion="user">
+        <section
+          aria-label="Guía del editor de rutas"
+          className={cn(
+            "flex items-center gap-1 rounded-lg border bg-card py-1.5 pr-1.5 pl-3 shadow-[0_12px_32px_-20px_oklch(0.2_0.04_260/35%)]",
+            className
+          )}
+        >
+          <button
+            type="button"
+            aria-haspopup="dialog"
+            onClick={() => openSheet(false)}
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md py-1 text-left focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          >
+            <ProgressRing done={doneCount} total={TOPICS.length} />
+            <span className="min-w-0">
+              <span className="block text-sm leading-tight font-semibold">
+                Guía de la ruta
+              </span>
+              <span className="block truncate text-xs text-muted-foreground">
+                {topic.title}
+              </span>
+            </span>
+          </button>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-haspopup="dialog"
+            onClick={() => openSheet(true)}
+          >
+            <ListTree /> Pasos
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            aria-label="Cerrar la guía"
+            onClick={onClose}
+          >
+            <X />
+          </Button>
+        </section>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetContent
+            side="bottom"
+            className="max-h-[85dvh] gap-0 rounded-t-xl pb-[env(safe-area-inset-bottom)]"
+            // El foco va al campo que se muestra, no de vuelta a la barra.
+            onCloseAutoFocus={(event) => event.preventDefault()}
+          >
+            <SheetHeader className="flex-row items-center gap-2.5 border-b px-4 py-3 pr-12">
+              <ProgressRing done={doneCount} total={TOPICS.length} />
+              <div className="min-w-0">
+                <SheetTitle className="text-sm">Guía de la ruta</SheetTitle>
+                <SheetDescription className="text-xs">
+                  {doneCount} de {TOPICS.length} listos
+                </SheetDescription>
+              </div>
+              <Button
+                size="sm"
+                variant={showSteps ? "secondary" : "ghost"}
+                aria-pressed={showSteps}
+                className="ml-auto"
+                onClick={() => setShowSteps(!showSteps)}
+              >
+                <ListTree /> Pasos
+              </Button>
+            </SheetHeader>
+            <div className="min-h-0 overflow-y-auto px-4 pt-3 pb-5">{body}</div>
+          </SheetContent>
+        </Sheet>
+      </MotionConfig>
+    )
+  }
 
   return (
     <MotionConfig reducedMotion="user">
@@ -593,112 +651,178 @@ export function RouteGuide({
             id={bodyId}
             className="min-h-0 overflow-y-auto border-t px-4 pt-3 pb-4"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              {showSteps ? (
-                <motion.div
-                  key="pasos"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.14 }}
-                >
-                  <BranchedMenu
-                    aria-label="Pasos de la guía"
-                    items={items}
-                    open={open}
-                    onToggle={(i, isOpen) =>
-                      setOpen((prev) =>
-                        isOpen ? [...prev, i] : prev.filter((s) => s !== i)
-                      )
-                    }
-                    active={active}
-                    onSelect={(value) => {
-                      onActive(value)
-                      // Deja ver la rama que se dibuja antes de volver al tema.
-                      window.setTimeout(() => setShowSteps(false), 320)
-                    }}
-                    width={400}
-                    rowHeight={32}
-                    indent={30}
-                    trunk={10}
-                    radius={8}
-                    fontSize={13}
-                    color="var(--foreground)"
-                    accentColor="var(--signal)"
-                    lineColor="var(--border)"
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key={topic.value}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
-                  aria-live="polite"
-                >
-                  <div className="flex items-start gap-2.5">
-                    <span
-                      className={cn(
-                        "grid size-8 shrink-0 place-items-center rounded-lg",
-                        isDone
-                          ? "bg-signal-soft text-signal"
-                          : "bg-muted text-foreground"
-                      )}
-                      aria-hidden="true"
-                    >
-                      {isDone ? (
-                        <Check className="size-4" />
-                      ) : (
-                        <topic.icon className="size-4" strokeWidth={1.8} />
-                      )}
-                    </span>
-                    <div className="min-w-0">
-                      <h3 className="text-sm leading-tight font-semibold text-balance">
-                        {topic.title}
-                      </h3>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {GUIDE[sectionOf(topic.value)].label}
-                        {isDone && " · listo"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3 space-y-2 text-[13px] leading-relaxed text-pretty text-muted-foreground">
-                    {topic.body}
-                  </div>
-                  {topic.legend && (
-                    <div className="mt-3 rounded-lg bg-muted/60 px-3 py-2.5">
-                      <LegendRow legend={topic.legend} />
-                    </div>
-                  )}
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => onShow(topic.value)}
-                    >
-                      <Crosshair /> Mostrar dónde
-                    </Button>
-                    {nextTopic && (
-                      <Button
-                        size="sm"
-                        variant={isDone ? "default" : "ghost"}
-                        onClick={() => {
-                          onActive(nextTopic.value)
-                          onShow(nextTopic.value)
-                        }}
-                      >
-                        {nextTopic.label} <ArrowRight />
-                      </Button>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {body}
           </div>
         )}
       </section>
     </MotionConfig>
+  )
+}
+
+/** El tema activo con su explicación, o el menú ramificado con todos. */
+function GuideBody({
+  progress,
+  active,
+  onActive,
+  onShow,
+  showSteps,
+  onShowSteps,
+  beforeShow,
+}: GuideProps & {
+  showSteps: boolean
+  onShowSteps: (show: boolean) => void
+  beforeShow?: () => void
+}) {
+  const [open, setOpen] = useState<number[]>(() => [sectionOf(active)])
+
+  // Al pasar a otra sección, el menú abre esa y pliega las demás.
+  const activeSection = sectionOf(active)
+  const [lastSection, setLastSection] = useState(activeSection)
+  if (activeSection !== lastSection) {
+    setLastSection(activeSection)
+    setOpen([activeSection])
+  }
+
+  const topic = TOPICS.find((t) => t.value === active) ?? TOPICS[0]
+  const isDone = topic.done(progress)
+  const next = nextPending(progress, topic.value)
+  const nextTopic = TOPICS.find((t) => t.value === next)
+
+  const show = (value: string) => {
+    if (!beforeShow) return onShow(value)
+    // La hoja bloquea el desplazamiento y el foco hasta que termina de cerrarse.
+    beforeShow()
+    window.setTimeout(() => onShow(value), 260)
+  }
+
+  const items = useMemo<BranchedMenuItem[]>(
+    () =>
+      GUIDE.map((section) => ({
+        label: section.label,
+        meta: `${section.topics.filter((t) => t.done(progress)).length}/${section.topics.length}`,
+        children: section.topics.map((t) => {
+          const Icon = t.done(progress) ? Check : t.icon
+          return {
+            value: t.value,
+            label: t.label,
+            icon: (
+              <Icon
+                className={cn(
+                  "size-4",
+                  t.done(progress) && t.value !== active && "text-signal"
+                )}
+                strokeWidth={1.8}
+              />
+            ),
+          }
+        }),
+      })),
+    [progress, active]
+  )
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      {showSteps ? (
+        <motion.div
+          key="pasos"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.14 }}
+        >
+          <BranchedMenu
+            aria-label="Pasos de la guía"
+            items={items}
+            open={open}
+            onToggle={(i, isOpen) =>
+              setOpen((prev) =>
+                isOpen ? [...prev, i] : prev.filter((s) => s !== i)
+              )
+            }
+            active={active}
+            onSelect={(value) => {
+              onActive(value)
+              // Deja ver la rama que se dibuja antes de volver al tema.
+              window.setTimeout(() => onShowSteps(false), 320)
+            }}
+            width={400}
+            rowHeight={36}
+            indent={30}
+            trunk={10}
+            radius={8}
+            fontSize={13}
+            color="var(--foreground)"
+            accentColor="var(--signal)"
+            lineColor="var(--border)"
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          key={topic.value}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+          aria-live="polite"
+        >
+          <div className="flex items-start gap-2.5">
+            <span
+              className={cn(
+                "grid size-8 shrink-0 place-items-center rounded-lg",
+                isDone
+                  ? "bg-signal-soft text-signal"
+                  : "bg-muted text-foreground"
+              )}
+              aria-hidden="true"
+            >
+              {isDone ? (
+                <Check className="size-4" />
+              ) : (
+                <topic.icon className="size-4" strokeWidth={1.8} />
+              )}
+            </span>
+            <div className="min-w-0">
+              <h3 className="text-sm leading-tight font-semibold text-balance">
+                {topic.title}
+              </h3>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {GUIDE[sectionOf(topic.value)].label}
+                {isDone && " · listo"}
+              </p>
+            </div>
+          </div>
+          <div className="mt-3 space-y-2 text-[13px] leading-relaxed text-pretty text-muted-foreground">
+            {topic.body}
+          </div>
+          {topic.legend && (
+            <div className="mt-3 rounded-lg bg-muted/60 px-3 py-2.5">
+              <LegendRow legend={topic.legend} />
+            </div>
+          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => show(topic.value)}
+            >
+              <Crosshair /> Mostrar dónde
+            </Button>
+            {nextTopic && (
+              <Button
+                size="sm"
+                variant={isDone ? "default" : "ghost"}
+                onClick={() => {
+                  onActive(nextTopic.value)
+                  show(nextTopic.value)
+                }}
+              >
+                {nextTopic.label} <ArrowRight />
+              </Button>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
