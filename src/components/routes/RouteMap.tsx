@@ -157,6 +157,10 @@ export function RouteMap({
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        // OpenStreetMap bloquea los mosaicos sin Referer ("Access blocked"), y
+        // Netlify sirve el panel con Referrer-Policy: same-origin: aquí se
+        // envía solo el origen del panel.
+        referrerPolicy="strict-origin-when-cross-origin"
         maxNativeZoom={19}
         maxZoom={21}
       />
