@@ -83,18 +83,12 @@ export function RoutesSection() {
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex gap-3">
-          <Route className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
-          <div>
-            <h2 className="text-base font-medium">Rutas curadas</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Perfiles con los que la app guía punto por punto. Llevan
-              coordenadas: solo se guardan en el servidor.
-            </p>
-          </div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <Route className="size-5 shrink-0 text-muted-foreground" />
+          <h2 className="text-base font-medium">Rutas curadas</h2>
         </div>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 gap-1.5">
           <Button variant="outline" size="sm" asChild>
             <Link to="/rutas/$slug" params={{ slug: "nueva" }}>
               <Plus /> Nueva
@@ -118,6 +112,11 @@ export function RoutesSection() {
           onChange={(event) => void upload(event.target.files)}
         />
       </div>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        Perfiles con los que la app guía punto por punto. Llevan coordenadas:
+        solo se guardan en el servidor.
+      </p>
 
       <div className="mt-5">
         {routes.isPending ? (
@@ -168,31 +167,35 @@ function RouteRow({ route }: { route: RouteProfile }) {
     )
 
   return (
-    <li className="flex items-center gap-3 px-4 py-3">
+    <li className="flex items-start gap-2 py-3 pr-2 pl-4">
       <div className="min-w-0 flex-1">
         <Link
           to="/rutas/$slug"
           params={{ slug: route.slug }}
-          className="block truncate rounded-sm text-sm font-medium hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="line-clamp-2 rounded-sm text-sm leading-snug font-medium hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
           title={`Editar ${route.name}`}
         >
           {route.name}
         </Link>
-        <p className="mt-0.5 font-mono text-xs text-muted-foreground tabular-nums">
-          {DIRECTION_LABEL[route.direction]} · {route.points.length} puntos ·{" "}
-          {route.slug}
-        </p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span
+            className={cn(
+              "inline-flex h-5 items-center rounded-full px-2 text-xs font-medium whitespace-nowrap",
+              route.validated_in_field
+                ? "bg-signal-soft text-signal"
+                : "bg-wait-soft text-wait"
+            )}
+          >
+            {route.validated_in_field ? "Validada" : "De prueba"}
+          </span>
+          <span
+            className="font-mono text-xs text-muted-foreground tabular-nums"
+            title={route.slug}
+          >
+            {DIRECTION_LABEL[route.direction]} · {route.points.length} puntos
+          </span>
+        </div>
       </div>
-      <span
-        className={cn(
-          "inline-flex h-6 shrink-0 items-center rounded-full px-2.5 text-xs font-medium whitespace-nowrap",
-          route.validated_in_field
-            ? "bg-signal-soft text-signal"
-            : "bg-wait-soft text-wait"
-        )}
-      >
-        {route.validated_in_field ? "Validada" : "De prueba"}
-      </span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
