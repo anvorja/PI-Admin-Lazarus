@@ -4,10 +4,12 @@ import {
   BadgeCheck,
   CalendarDays,
   Check,
+  ChevronDown,
   Crosshair,
   Flag,
   Footprints,
   Hash,
+  ListTree,
   MapPinPlus,
   MessageSquareText,
   Radar,
@@ -464,11 +466,11 @@ function LegendRow({ legend }: { legend: Legend }) {
       )
   }
 }
-
 /**
- * Guía del editor de rutas: un menú ramificado con cada paso y cada campo, que
- * sigue lo que hace la persona (el campo que enfoca, lo que ya llenó) y explica
- * qué es y cómo lo usa la app.
+ * Guía del editor de rutas. Va en la columna del formulario, junto a los campos
+ * que explica, y nunca sobre el mapa. Muestra el tema del campo que la persona
+ * enfoca; «Pasos» abre el menú ramificado con todo el recorrido de la guía, y se
+ * puede plegar a una sola línea.
  */
 export function RouteGuide({
   progress,
@@ -486,9 +488,11 @@ export function RouteGuide({
   onClose: () => void
   className?: string
 }) {
+  const [folded, setFolded] = useState(false)
+  const [showSteps, setShowSteps] = useState(false)
   const [open, setOpen] = useState<number[]>(() => [sectionOf(active)])
 
-  // Al pasar a otra sección, la guía abre esa y pliega las demás.
+  // Al pasar a otra sección, el menú abre esa y pliega las demás.
   const activeSection = sectionOf(active)
   const [lastSection, setLastSection] = useState(activeSection)
   if (activeSection !== lastSection) {
@@ -527,35 +531,54 @@ export function RouteGuide({
     [progress, active]
   )
 
+  const bodyId = "guia-ruta-contenido"
+
   return (
     <MotionConfig reducedMotion="user">
       <section
         aria-label="Guía del editor de rutas"
         className={cn(
-          "flex flex-col overflow-hidden rounded-xl border bg-popover/95 text-popover-foreground shadow-[0_24px_48px_-24px_oklch(0.2_0.04_260/45%)] backdrop-blur",
+          "flex flex-col overflow-hidden rounded-lg border bg-card shadow-[0_12px_32px_-20px_oklch(0.2_0.04_260/35%)]",
           className
         )}
       >
-        <header className="flex items-center gap-3 border-b px-4 py-2.5">
-          <span className="text-sm font-semibold">Guía de la ruta</span>
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div
-              role="progressbar"
-              aria-label="Avance de la guía"
-              aria-valuemin={0}
-              aria-valuemax={TOPICS.length}
-              aria-valuenow={doneCount}
-              className="h-1 max-w-40 flex-1 overflow-hidden rounded-full bg-muted"
-            >
-              <div
-                className="h-full rounded-full bg-signal transition-[width] duration-500 ease-out motion-reduce:transition-none"
-                style={{ width: `${(doneCount / TOPICS.length) * 100}%` }}
-              />
-            </div>
-            <span className="font-mono text-xs text-muted-foreground tabular-nums">
-              {doneCount}/{TOPICS.length}
+        <header className="flex items-center gap-2 py-1.5 pr-1.5 pl-3">
+          <button
+            type="button"
+            aria-expanded={!folded}
+            aria-controls={bodyId}
+            onClick={() => setFolded(!folded)}
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-md py-1 text-left focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          >
+            <ProgressRing done={doneCount} total={TOPICS.length} />
+            <span className="min-w-0">
+              <span className="block text-sm leading-tight font-semibold">
+                Guía de la ruta
+              </span>
+              <span className="block truncate text-xs text-muted-foreground">
+                {folded
+                  ? topic.title
+                  : `${doneCount} de ${TOPICS.length} listos`}
+              </span>
             </span>
-          </div>
+            <ChevronDown
+              className={cn(
+                "ml-auto size-4 shrink-0 text-muted-foreground transition-transform duration-200 motion-reduce:transition-none",
+                !folded && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
+          </button>
+          {!folded && (
+            <Button
+              size="sm"
+              variant={showSteps ? "secondary" : "ghost"}
+              aria-pressed={showSteps}
+              onClick={() => setShowSteps(!showSteps)}
+            >
+              <ListTree /> Pasos
+            </Button>
+          )}
           <Button
             size="icon-sm"
             variant="ghost"
@@ -565,101 +588,153 @@ export function RouteGuide({
             <X />
           </Button>
         </header>
-        <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-[232px_minmax(0,1fr)]">
-          <div className="min-h-0 overflow-y-auto border-b px-3 py-2 sm:border-r sm:border-b-0">
-            <BranchedMenu
-              aria-label="Pasos de la guía"
-              items={items}
-              open={open}
-              onToggle={(i, isOpen) =>
-                setOpen((prev) =>
-                  isOpen ? [...prev, i] : prev.filter((s) => s !== i)
-                )
-              }
-              active={active}
-              onSelect={(value) => onActive(value)}
-              width={208}
-              rowHeight={32}
-              indent={30}
-              trunk={10}
-              radius={8}
-              fontSize={13}
-              color="var(--foreground)"
-              accentColor="var(--signal)"
-              lineColor="var(--border)"
-            />
-          </div>
-          <div className="min-h-0 overflow-y-auto px-4 py-3.5">
+        {!folded && (
+          <div
+            id={bodyId}
+            className="min-h-0 overflow-y-auto border-t px-4 pt-3 pb-4"
+          >
             <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={topic.value}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
-                aria-live="polite"
-              >
-                <div className="flex items-start gap-2.5">
-                  <span
-                    className={cn(
-                      "grid size-8 shrink-0 place-items-center rounded-lg",
-                      isDone
-                        ? "bg-signal-soft text-signal"
-                        : "bg-muted text-foreground"
-                    )}
-                    aria-hidden="true"
-                  >
-                    {isDone ? (
-                      <Check className="size-4" />
-                    ) : (
-                      <topic.icon className="size-4" strokeWidth={1.8} />
-                    )}
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="text-sm leading-tight font-semibold text-balance">
-                      {topic.title}
-                    </h3>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {GUIDE[sectionOf(topic.value)].label}
-                      {isDone && " · listo"}
-                    </p>
+              {showSteps ? (
+                <motion.div
+                  key="pasos"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.14 }}
+                >
+                  <BranchedMenu
+                    aria-label="Pasos de la guía"
+                    items={items}
+                    open={open}
+                    onToggle={(i, isOpen) =>
+                      setOpen((prev) =>
+                        isOpen ? [...prev, i] : prev.filter((s) => s !== i)
+                      )
+                    }
+                    active={active}
+                    onSelect={(value) => {
+                      onActive(value)
+                      // Deja ver la rama que se dibuja antes de volver al tema.
+                      window.setTimeout(() => setShowSteps(false), 320)
+                    }}
+                    width={400}
+                    rowHeight={32}
+                    indent={30}
+                    trunk={10}
+                    radius={8}
+                    fontSize={13}
+                    color="var(--foreground)"
+                    accentColor="var(--signal)"
+                    lineColor="var(--border)"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={topic.value}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+                  aria-live="polite"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <span
+                      className={cn(
+                        "grid size-8 shrink-0 place-items-center rounded-lg",
+                        isDone
+                          ? "bg-signal-soft text-signal"
+                          : "bg-muted text-foreground"
+                      )}
+                      aria-hidden="true"
+                    >
+                      {isDone ? (
+                        <Check className="size-4" />
+                      ) : (
+                        <topic.icon className="size-4" strokeWidth={1.8} />
+                      )}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-sm leading-tight font-semibold text-balance">
+                        {topic.title}
+                      </h3>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {GUIDE[sectionOf(topic.value)].label}
+                        {isDone && " · listo"}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-3 space-y-2 text-[13px] leading-relaxed text-pretty text-muted-foreground">
-                  {topic.body}
-                </div>
-                {topic.legend && (
-                  <div className="mt-3 rounded-lg bg-muted/60 px-3 py-2.5">
-                    <LegendRow legend={topic.legend} />
+                  <div className="mt-3 space-y-2 text-[13px] leading-relaxed text-pretty text-muted-foreground">
+                    {topic.body}
                   </div>
-                )}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onShow(topic.value)}
-                  >
-                    <Crosshair /> Mostrar dónde
-                  </Button>
-                  {nextTopic && (
+                  {topic.legend && (
+                    <div className="mt-3 rounded-lg bg-muted/60 px-3 py-2.5">
+                      <LegendRow legend={topic.legend} />
+                    </div>
+                  )}
+                  <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                       size="sm"
-                      variant={isDone ? "default" : "ghost"}
-                      onClick={() => {
-                        onActive(nextTopic.value)
-                        onShow(nextTopic.value)
-                      }}
+                      variant="outline"
+                      onClick={() => onShow(topic.value)}
                     >
-                      {nextTopic.label} <ArrowRight />
+                      <Crosshair /> Mostrar dónde
                     </Button>
-                  )}
-                </div>
-              </motion.div>
+                    {nextTopic && (
+                      <Button
+                        size="sm"
+                        variant={isDone ? "default" : "ghost"}
+                        onClick={() => {
+                          onActive(nextTopic.value)
+                          onShow(nextTopic.value)
+                        }}
+                      >
+                        {nextTopic.label} <ArrowRight />
+                      </Button>
+                    )}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
-        </div>
+        )}
       </section>
     </MotionConfig>
+  )
+}
+
+/** Avance de la guía en un anillo pequeño. */
+function ProgressRing({ done, total }: { done: number; total: number }) {
+  const r = 9
+  const length = 2 * Math.PI * r
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      role="img"
+      aria-label={`${done} de ${total} temas listos`}
+      className="shrink-0 -rotate-90"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r={r}
+        fill="none"
+        strokeWidth="2.5"
+        className="stroke-muted"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r={r}
+        fill="none"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        className="stroke-signal transition-[stroke-dashoffset] duration-500 ease-out motion-reduce:transition-none"
+        strokeDasharray={length}
+        strokeDashoffset={length * (1 - done / total)}
+      />
+    </svg>
   )
 }
 
