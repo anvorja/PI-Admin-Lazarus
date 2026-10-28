@@ -107,6 +107,7 @@ function Segment({ from, to }: { from: RoutePoint; to: RoutePoint }) {
   const tight = meters < MIN_SEGMENT_M
   return (
     <div
+      data-guide="pasos"
       className="flex items-center gap-3 py-1 pl-[13px]"
       aria-label={`${stepsFor(meters)} pasos, ${meters.toFixed(0)} metros`}
     >
@@ -164,55 +165,59 @@ function PointForm({
 
   return (
     <div className="mt-3 space-y-4 border-t pt-4">
-      <div className="space-y-1.5">
-        <Label htmlFor={`${id}-nombre`}>Nombre</Label>
-        <Input
-          id={`${id}-nombre`}
-          value={point.name}
-          maxLength={80}
-          onChange={(e) => update({ name: e.target.value }, "name")}
-        />
-      </div>
-      <div className="space-y-1.5">
-        <div className="flex items-baseline justify-between">
-          <Label htmlFor={`${id}-indicacion`}>Indicación al llegar</Label>
-          <span className="font-mono text-xs text-muted-foreground tabular-nums">
-            {point.instruction.length}/200
-          </span>
+      <div data-guide="indicacion" className="space-y-4">
+        <div className="space-y-1.5">
+          <Label htmlFor={`${id}-nombre`}>Nombre</Label>
+          <Input
+            id={`${id}-nombre`}
+            value={point.name}
+            maxLength={80}
+            onChange={(e) => update({ name: e.target.value }, "name")}
+          />
         </div>
-        <textarea
-          id={`${id}-indicacion`}
-          value={point.instruction}
-          maxLength={200}
-          rows={3}
-          placeholder="Gira a la izquierda; a unos 8 pasos está el cruce"
-          onChange={(e) =>
-            update({ instruction: e.target.value }, "instruction")
-          }
-          className="w-full resize-y rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
-        />
+        <div className="space-y-1.5">
+          <div className="flex items-baseline justify-between">
+            <Label htmlFor={`${id}-indicacion`}>Indicación al llegar</Label>
+            <span className="font-mono text-xs text-muted-foreground tabular-nums">
+              {point.instruction.length}/200
+            </span>
+          </div>
+          <textarea
+            id={`${id}-indicacion`}
+            value={point.instruction}
+            maxLength={200}
+            rows={3}
+            placeholder="Gira a la izquierda; a unos 8 pasos está el cruce"
+            onChange={(e) =>
+              update({ instruction: e.target.value }, "instruction")
+            }
+            className="w-full resize-y rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+          />
+        </div>
       </div>
-      <div className="space-y-1.5">
-        <span className="text-sm font-medium">Riesgo</span>
-        <Segmented
-          label="Riesgo"
-          value={point.risk}
-          options={RISKS}
-          onChange={(risk) => update({ risk })}
-        />
+      <div data-guide="cruce" className="space-y-4">
+        <div className="space-y-1.5">
+          <span className="text-sm font-medium">Riesgo</span>
+          <Segmented
+            label="Riesgo"
+            value={point.risk}
+            options={RISKS}
+            onChange={(risk) => update({ risk })}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <span className="text-sm font-medium">Cruce de vía</span>
+          <Segmented
+            label="Cruce de vía"
+            value={point.crossing}
+            options={CROSSINGS}
+            onChange={(crossing) =>
+              update(crossing ? { crossing, risk: "high" } : { crossing: null })
+            }
+          />
+        </div>
       </div>
-      <div className="space-y-1.5">
-        <span className="text-sm font-medium">Cruce de vía</span>
-        <Segmented
-          label="Cruce de vía"
-          value={point.crossing}
-          options={CROSSINGS}
-          onChange={(crossing) =>
-            update(crossing ? { crossing, risk: "high" } : { crossing: null })
-          }
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div data-guide="distancias" className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label htmlFor={`${id}-aproximacion`}>Aviso al acercarse (m)</Label>
           <Input
@@ -316,7 +321,12 @@ export function StepList({
           Aún no hay puntos. Agrega el primero tocando el mapa, o abre "Notas de
           campo" e inserta las notas que dictó la persona en el recorrido.
         </p>
-        <Button className="mt-3" size="sm" onClick={() => onPlaceAfter(-1)}>
+        <Button
+          data-guide="agregar"
+          className="mt-3"
+          size="sm"
+          onClick={() => onPlaceAfter(-1)}
+        >
           <Plus /> Agregar en el mapa
         </Button>
       </div>
@@ -426,6 +436,7 @@ export function StepList({
         })}
       </ol>
       <Button
+        data-guide="agregar"
         className="mt-3"
         size="sm"
         variant="outline"

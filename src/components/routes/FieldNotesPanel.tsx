@@ -55,7 +55,7 @@ export function FieldNotesPanel({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1.5">
+        <div data-guide="telefono" className="space-y-1.5">
           <Label htmlFor="notas-telefono">Teléfono</Label>
           <select
             id="notas-telefono"
@@ -73,7 +73,7 @@ export function FieldNotesPanel({
             ))}
           </select>
         </div>
-        <div className="space-y-1.5">
+        <div data-guide="dia" className="space-y-1.5">
           <Label htmlFor="notas-dia">Día</Label>
           <select
             id="notas-dia"
@@ -91,7 +91,7 @@ export function FieldNotesPanel({
           </select>
         </div>
       </div>
-      <div className="flex items-center justify-between gap-3">
+      <div data-guide="gps" className="flex items-center justify-between gap-3">
         <Label
           htmlFor="notas-recorrido"
           className="font-normal text-muted-foreground"
@@ -127,7 +127,11 @@ export function FieldNotesPanel({
           o poco después de dictarlas.
         </p>
       ) : (
-        <ol className="space-y-1.5" aria-label="Notas de campo">
+        <ol
+          data-guide="notas"
+          className="space-y-1.5"
+          aria-label="Notas de campo"
+        >
           {notes.map((note) => {
             const positioned = hasPosition(note)
             const isFocused = positioned && focused === note
