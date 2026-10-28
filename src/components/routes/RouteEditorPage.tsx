@@ -7,6 +7,7 @@ import {
 import {
   ArrowLeft,
   ChevronDown,
+  CircleHelp,
   FileDown,
   MapPin,
   Redo2,
@@ -14,7 +15,7 @@ import {
   Undo2,
   X,
 } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react"
 import { toast } from "sonner"
 
 import { AppHeader } from "@/components/console/AppHeader"
@@ -22,6 +23,15 @@ import {
   FieldNotesPanel,
   hasPosition,
 } from "@/components/routes/FieldNotesPanel"
+import {
+  RouteGuide,
+  guideWasClosed,
+  nextPending,
+  rememberGuideClosed,
+  sectionOf,
+  useGuideHighlight,
+  type GuideProgress,
+} from "@/components/routes/RouteGuide"
 import { RouteMap, type PositionedNote } from "@/components/routes/RouteMap"
 import { StepList, pointWarnings } from "@/components/routes/StepList"
 import { Button } from "@/components/ui/button"
@@ -110,6 +120,23 @@ export function RouteEditorPage() {
 
 type Tab = "recorrido" | "notas"
 
+const DESKTOP = "(min-width: 1024px)"
+
+/** En pantalla ancha la guía flota sobre el mapa; en el teléfono, va arriba. */
+function useDesktop() {
+  return useSyncExternalStore(
+    (notify) => {
+      const query = window.matchMedia(DESKTOP)
+      query.addEventListener("change", notify)
+      return () => query.removeEventListener("change", notify)
+    },
+    () => window.matchMedia(DESKTOP).matches
+  )
+}
+
+/** Temas de la guía que se explican con un punto abierto. */
+const POINT_TOPICS = new Set(["indicacion", "cruce", "distancias"])
+
 function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   const draft = useRouteDraft(initial)
   const profile = draft.draft
@@ -139,6 +166,11 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   )
   const mapNotes = useMemo(() => dayNotes.filter(hasPosition), [dayNotes])
 
+  const desktop = useDesktop()
+  const [guideOpen, setGuideOpen] = useState(() => isNew && !guideWasClosed())
+  const [seen, setSeen] = useState<ReadonlySet<string>>(() => new Set())
+  const [guideTopic, setGuideTopic] = useState("nombre")
+
   // Atajos de deshacer y rehacer fuera de los campos de texto.
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -166,6 +198,87 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   const warnings = profile.points.reduce(
     (count, _, i) => count + pointWarnings(profile.points, i).length,
     0
+  )
+
+  const progress: GuideProgress = {
+    profile,
+    slug: isNew && !slugEdited ? slugify(profile.name) : profile.slug,
+    isNew,
+    dirty: draft.dirty,
+    deviceId,
+    day: activeDay,
+    warnings,
+    seen,
+  }
+
+  function guideTo(value: string) {
+    setGuideTopic(value)
+    if (!seen.has(value)) setSeen(new Set(seen).add(value))
+  }
+
+  function openGuide() {
+    guideTo(nextPending(progress) ?? "nombre")
+    setGuideOpen(true)
+  }
+
+  function closeGuide() {
+    setGuideOpen(false)
+    if (isNew) rememberGuideClosed()
+  }
+
+  /** Lleva al campo del tema: abre lo que haga falta, lo centra y lo enfoca. */
+  function showTopic(value: string) {
+    const section = sectionOf(value)
+    if (section === 0) setMetaOpen(true)
+    if (section === 1) setTab("notas")
+    if (section === 2) setTab("recorrido")
+    if (POINT_TOPICS.has(value) && selected === null && profile.points.length)
+      setSelected(0)
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const el =
+          document.querySelector<HTMLElement>(`[data-guide="${value}"]`) ??
+          (section === 2
+            ? document.querySelector<HTMLElement>('[data-guide="agregar"]')
+            : null)
+        if (!el) return
+        el.scrollIntoView({ block: "center", behavior: "smooth" })
+        const target = el.matches("input, select, textarea, button")
+          ? el
+          : el.querySelector<HTMLElement>(
+              "input:not([readonly]), select, textarea, button:not(:disabled)"
+            )
+        target?.focus({ preventScroll: true })
+      })
+    )
+  }
+
+  // La guía sigue el campo que la persona enfoca.
+  function onFocusField(event: React.FocusEvent) {
+    const value = (event.target as HTMLElement)
+      .closest<HTMLElement>("[data-guide]")
+      ?.getAttribute("data-guide")
+    if (value && value !== guideTopic) guideTo(value)
+  }
+
+  useGuideHighlight(
+    guideOpen ? guideTopic : null,
+    `${tab}|${metaOpen}|${selected}|${deviceId}|${profile.points.length}|${notes.isPending}`
+  )
+
+  const guide = guideOpen && (
+    <RouteGuide
+      progress={progress}
+      active={guideTopic}
+      onActive={guideTo}
+      onShow={showTopic}
+      onClose={closeGuide}
+      className={
+        desktop
+          ? "absolute right-3 bottom-8 z-[500] max-h-[min(460px,calc(100%-5rem))] w-[min(640px,calc(100%-1.5rem))]"
+          : "mb-5"
+      }
+    />
   )
 
   function place(lat: number, lon: number) {
@@ -234,7 +347,10 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   }
 
   return (
-    <main className="mx-auto max-w-[1400px] px-4 py-6 lg:px-8">
+    <main
+      className="mx-auto max-w-[1400px] px-4 py-6 lg:px-8"
+      onFocusCapture={onFocusField}
+    >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
         <Button
           asChild
@@ -250,7 +366,10 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
           <h1 className="truncate text-xl font-semibold tracking-tight">
             {profile.name || "Ruta nueva"}
           </h1>
-          <p className="mt-0.5 font-mono text-xs text-muted-foreground tabular-nums">
+          <p
+            data-guide="revisar"
+            className="mt-0.5 w-fit font-mono text-xs text-muted-foreground tabular-nums"
+          >
             {profile.points.length} puntos
             {warnings > 0 && (
               <span className="text-wait">
@@ -264,6 +383,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
           </p>
         </div>
         <span
+          data-guide="validar"
           className={cn(
             "inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium",
             profile.validated_in_field
@@ -274,6 +394,11 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
           {profile.validated_in_field ? "Validada" : "De prueba"}
         </span>
         <div className="flex items-center gap-1">
+          {!guideOpen && (
+            <Button variant="ghost" onClick={openGuide}>
+              <CircleHelp /> Guía
+            </Button>
+          )}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -310,6 +435,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
             <FileDown /> .json
           </Button>
           <Button
+            data-guide="guardar"
             disabled={!draft.dirty || save.isPending}
             onClick={() => void submit()}
           >
@@ -362,9 +488,11 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
               </Button>
             </div>
           )}
+          {desktop && guide}
         </section>
 
         <aside className="order-2 min-w-0 lg:order-1">
+          {!desktop && guide}
           <MetaForm
             draft={draft}
             isNew={isNew}
@@ -492,11 +620,11 @@ function MetaForm({
       </button>
       {open && (
         <div className="space-y-3 border-t px-4 pt-3 pb-4">
-          <div className="space-y-1.5">
+          <div data-guide="nombre" className="space-y-1.5">
             <Label htmlFor="ruta-nombre">Nombre</Label>
             <Input id="ruta-nombre" maxLength={120} {...field("name")} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div data-guide="extremos" className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="ruta-origen">Origen</Label>
               <Input id="ruta-origen" maxLength={80} {...field("origin")} />
@@ -511,7 +639,7 @@ function MetaForm({
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
+            <div data-guide="sentido" className="space-y-1.5">
               <Label htmlFor="ruta-sentido">Sentido</Label>
               <select
                 id="ruta-sentido"
@@ -527,7 +655,7 @@ function MetaForm({
                 <option value="return">Vuelta</option>
               </select>
             </div>
-            <div className="space-y-1.5">
+            <div data-guide="identificador" className="space-y-1.5">
               <Label htmlFor="ruta-slug">Identificador</Label>
               <Input
                 id="ruta-slug"

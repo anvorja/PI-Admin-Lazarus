@@ -270,3 +270,11 @@
   border-color: var(--halt);
   color: var(--background);
 }
+
+/* Guía del editor de rutas: el campo del tema que se está explicando. */
+[data-guide-active] {
+  border-radius: 10px;
+  outline: 2px solid color-mix(in oklab, var(--signal) 70%, transparent);
+  outline-offset: 5px;
+  transition: outline-color 200ms ease;
+}
