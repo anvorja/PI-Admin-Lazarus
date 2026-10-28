@@ -122,6 +122,35 @@ export const routeProfileSchema = z.object({
 export type RouteProfile = z.infer<typeof routeProfileSchema>
 export const routeProfilesSchema = z.array(routeProfileSchema)
 
+/** Nota de campo que dictó la persona (HU-024), con la posición del momento. */
+export const fieldNoteSchema = z.object({
+  at: z.string(),
+  text: z.string(),
+  lat: z.number().nullable(),
+  lon: z.number().nullable(),
+  accuracy_m: z.number().nullable(),
+  reliability: z.string().nullable(),
+  heading: z.number().nullable(),
+})
+export type FieldNote = z.infer<typeof fieldNoteSchema>
+export const fieldNotesSchema = z.array(fieldNoteSchema)
+
+/** Recorrido GPS de un día del teléfono, en hora de Colombia. */
+export const trackSchema = z.object({
+  days: z.array(z.string()),
+  day: z.string().nullable(),
+  points: z.array(
+    z.object({
+      at: z.string(),
+      lat: z.number(),
+      lon: z.number(),
+      accuracy_m: z.number().nullable(),
+      reliability: z.string().nullable(),
+    })
+  ),
+})
+export type Track = z.infer<typeof trackSchema>
+
 const platformSummarySchema = z.object({
   samples: z.number().int(),
   cpu_avg: z.number().optional(),

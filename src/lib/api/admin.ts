@@ -5,18 +5,22 @@ import {
   deviceSchema,
   deviceSessionsSchema,
   devicesSchema,
+  fieldNotesSchema,
   metricsSchema,
   routeProfileSchema,
   routeProfilesSchema,
   settingsSchema,
+  trackSchema,
   type Device,
   type DeviceLogs,
   type DeviceSession,
   type DeviceUpdate,
+  type FieldNote,
   type Metrics,
   type RouteProfile,
   type Schedule,
   type ServiceSettings,
+  type Track,
 } from "./schemas"
 
 export function fetchSettings(): Promise<ServiceSettings> {
@@ -82,6 +86,17 @@ export async function downloadDeviceLogs(id: number): Promise<void> {
   link.download = name
   link.click()
   URL.revokeObjectURL(url)
+}
+
+/** Notas de campo del teléfono, para curar rutas. */
+export function fetchDeviceNotes(id: number): Promise<FieldNote[]> {
+  return requestJson(`/devices/${id}/notes`, fieldNotesSchema)
+}
+
+/** Recorrido GPS de un día del teléfono (el más reciente sin `day`). */
+export function fetchDeviceTrack(id: number, day?: string): Promise<Track> {
+  const query = day ? `?day=${encodeURIComponent(day)}` : ""
+  return requestJson(`/devices/${id}/track${query}`, trackSchema)
 }
 
 /** Perfiles de ruta curados (HU-022): viven en la base de datos del backend. */
