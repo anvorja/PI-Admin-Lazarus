@@ -1,8 +1,11 @@
+import { Link } from "@tanstack/react-router"
 import {
   BadgeCheck,
   CircleOff,
   FileDown,
   MoreHorizontal,
+  Pencil,
+  Plus,
   Route,
   Trash2,
   Upload,
@@ -31,6 +34,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDeleteRoute, useRoutes, useSaveRoute } from "@/hooks/useRoutes"
 import { routeProfileSchema, type RouteProfile } from "@/lib/api/schemas"
+import { downloadProfile } from "@/lib/routeFiles"
 import { cn } from "@/lib/utils"
 
 const DIRECTION_LABEL = { outbound: "Ida", return: "Vuelta" } as const
@@ -52,18 +56,6 @@ async function readProfile(file: File): Promise<RouteProfile> {
     )
   }
   return result.data
-}
-
-function download(profile: RouteProfile) {
-  const blob = new Blob([JSON.stringify(profile, null, 2)], {
-    type: "application/json",
-  })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.href = url
-  link.download = `${profile.slug}.json`
-  link.click()
-  URL.revokeObjectURL(url)
 }
 
 /** Perfiles de ruta curados (HU-022): se cargan desde un .json y se guardan
@@ -102,14 +94,21 @@ export function RoutesSection() {
             </p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={save.isPending}
-          onClick={() => input.current?.click()}
-        >
-          <Upload /> Cargar
-        </Button>
+        <div className="flex shrink-0 gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/rutas/$slug" params={{ slug: "nueva" }}>
+              <Plus /> Nueva
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={save.isPending}
+            onClick={() => input.current?.click()}
+          >
+            <Upload /> Cargar
+          </Button>
+        </div>
         <input
           ref={input}
           type="file"
@@ -171,9 +170,14 @@ function RouteRow({ route }: { route: RouteProfile }) {
   return (
     <li className="flex items-center gap-3 px-4 py-3">
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium" title={route.name}>
+        <Link
+          to="/rutas/$slug"
+          params={{ slug: route.slug }}
+          className="block truncate rounded-sm text-sm font-medium hover:underline focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          title={`Editar ${route.name}`}
+        >
           {route.name}
-        </p>
+        </Link>
         <p className="mt-0.5 font-mono text-xs text-muted-foreground tabular-nums">
           {DIRECTION_LABEL[route.direction]} · {route.points.length} puntos ·{" "}
           {route.slug}
@@ -200,6 +204,11 @@ function RouteRow({ route }: { route: RouteProfile }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-52">
+          <DropdownMenuItem asChild>
+            <Link to="/rutas/$slug" params={{ slug: route.slug }}>
+              <Pencil /> Editar puntos
+            </Link>
+          </DropdownMenuItem>
           {route.validated_in_field ? (
             <DropdownMenuItem onSelect={() => setValidated(false)}>
               <CircleOff /> Volver a de prueba
@@ -209,7 +218,7 @@ function RouteRow({ route }: { route: RouteProfile }) {
               <BadgeCheck /> Marcar como validada
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onSelect={() => download(route)}>
+          <DropdownMenuItem onSelect={() => downloadProfile(route)}>
             <FileDown /> Descargar .json
           </DropdownMenuItem>
           <DropdownMenuSeparator />

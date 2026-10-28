@@ -2,6 +2,7 @@ import {
   createRootRouteWithContext,
   createRoute,
   createRouter,
+  lazyRouteComponent,
   Outlet,
   redirect,
 } from "@tanstack/react-router"
@@ -49,7 +50,25 @@ const consoleRoute = createRoute({
   component: ConsolePage,
 })
 
-const routeTree = rootRoute.addChildren([loginRoute, consoleRoute])
+const routeEditorRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/rutas/$slug",
+  beforeLoad: ({ context }) => {
+    if (context.auth.status !== "authenticated")
+      throw redirect({ to: "/ingresar" })
+  },
+  // El editor trae el mapa (Leaflet): se descarga solo al abrirlo.
+  component: lazyRouteComponent(
+    () => import("@/components/routes/RouteEditorPage"),
+    "RouteEditorPage"
+  ),
+})
+
+const routeTree = rootRoute.addChildren([
+  loginRoute,
+  consoleRoute,
+  routeEditorRoute,
+])
 
 export const router = createRouter({
   routeTree,
