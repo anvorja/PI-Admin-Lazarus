@@ -163,3 +163,110 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---- Editor de rutas: mapa (Leaflet) --------------------------------------- */
+
+.route-map {
+  background: var(--muted);
+  font-family: inherit;
+  z-index: 0;
+}
+/* Los mosaicos de OpenStreetMap son claros: en oscuro se invierten para que el
+   mapa no deslumbre sobre la tinta nocturna. */
+.dark .route-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9)
+    saturate(0.6);
+}
+.route-map .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--background) 80%, transparent);
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.route-map .leaflet-control-attribution a {
+  color: var(--foreground);
+}
+.route-map .leaflet-bar a {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.route-map .leaflet-popup-content-wrapper,
+.route-map .leaflet-popup-tip,
+.route-map .leaflet-tooltip {
+  background: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 32px -16px oklch(0.2 0.04 260 / 50%);
+}
+.route-map .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+}
+.route-map .leaflet-tooltip {
+  border-radius: 8px;
+  font-size: 12px;
+  max-width: 280px;
+  white-space: normal;
+}
+.route-map .leaflet-tooltip-top::before {
+  border-top-color: var(--border);
+}
+.route-map .route-line {
+  stroke: var(--foreground);
+  stroke-width: 3;
+  stroke-opacity: 0.85;
+  stroke-linejoin: round;
+  fill: none;
+}
+.route-map .gps-track {
+  stroke: var(--muted-foreground);
+  stroke-width: 2;
+  stroke-opacity: 0.55;
+  stroke-dasharray: 2 5;
+  fill: none;
+}
+.route-map .note-dot {
+  stroke: var(--wait);
+  stroke-width: 2;
+  fill: var(--wait);
+  fill-opacity: 0.35;
+  cursor: pointer;
+}
+.route-map .note-dot.is-focused {
+  fill-opacity: 0.8;
+}
+.route-pin {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--card);
+  color: var(--foreground);
+  border: 2px solid var(--foreground);
+  font-family: "Geist Mono Variable", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 6px 16px -8px oklch(0.2 0.04 260 / 60%);
+  cursor: grab;
+}
+.route-pin[data-tone="caution"] {
+  border-color: var(--wait);
+}
+.route-pin[data-tone="danger"] {
+  border-color: var(--halt);
+  color: var(--halt);
+}
+.route-pin[data-selected="true"] {
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 13px;
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--foreground) 22%, transparent),
+    0 10px 24px -10px oklch(0.2 0.04 260 / 70%);
+}
+.route-pin[data-selected="true"][data-tone="danger"] {
+  background: var(--halt);
+  border-color: var(--halt);
+  color: var(--background);
+}
