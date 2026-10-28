@@ -15,7 +15,7 @@ import {
   Undo2,
   X,
 } from "lucide-react"
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { toast } from "sonner"
 
 import { AppHeader } from "@/components/console/AppHeader"
@@ -120,20 +120,6 @@ export function RouteEditorPage() {
 
 type Tab = "recorrido" | "notas"
 
-const DESKTOP = "(min-width: 1024px)"
-
-/** En pantalla ancha la guía flota sobre el mapa; en el teléfono, va arriba. */
-function useDesktop() {
-  return useSyncExternalStore(
-    (notify) => {
-      const query = window.matchMedia(DESKTOP)
-      query.addEventListener("change", notify)
-      return () => query.removeEventListener("change", notify)
-    },
-    () => window.matchMedia(DESKTOP).matches
-  )
-}
-
 /** Temas de la guía que se explican con un punto abierto. */
 const POINT_TOPICS = new Set(["indicacion", "cruce", "distancias"])
 
@@ -166,7 +152,6 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   )
   const mapNotes = useMemo(() => dayNotes.filter(hasPosition), [dayNotes])
 
-  const desktop = useDesktop()
   const [guideOpen, setGuideOpen] = useState(() => isNew && !guideWasClosed())
   const [seen, setSeen] = useState<ReadonlySet<string>>(() => new Set())
   const [guideTopic, setGuideTopic] = useState("nombre")
@@ -273,11 +258,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
       onActive={guideTo}
       onShow={showTopic}
       onClose={closeGuide}
-      className={
-        desktop
-          ? "absolute right-3 bottom-8 z-[500] max-h-[min(460px,calc(100%-5rem))] w-[min(640px,calc(100%-1.5rem))]"
-          : "mb-5"
-      }
+      className="mb-5 lg:sticky lg:top-24 lg:z-10 lg:max-h-[calc(100dvh-7rem)]"
     />
   )
 
@@ -488,11 +469,10 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
               </Button>
             </div>
           )}
-          {desktop && guide}
         </section>
 
         <aside className="order-2 min-w-0 lg:order-1">
-          {!desktop && guide}
+          {guide}
           <MetaForm
             draft={draft}
             isNew={isNew}
