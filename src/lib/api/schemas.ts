@@ -19,12 +19,58 @@ export const scheduleSchema = z.object({
 })
 export type Schedule = z.infer<typeof scheduleSchema>
 
+/** Límites del mes para las alertas de consumo (HU-051). 0 = sin límite. */
+export const usageLimitsSchema = z.object({
+  transfer_gb: z.number(),
+  live_minutes: z.number(),
+  warn_pct: z.number(),
+})
+export type UsageLimits = z.infer<typeof usageLimitsSchema>
+
 export const settingsSchema = z.object({
   service_open: z.boolean(),
   schedule: scheduleSchema,
   open_now: z.boolean(),
+  usage_limits: usageLimitsSchema.optional(),
 })
 export type ServiceSettings = z.infer<typeof settingsSchema>
+
+/** ok: bajo el aviso · warn: desde el % de aviso · limit: 100 % o más · unset: sin límite. */
+export const usageLevelSchema = z.enum(["ok", "warn", "limit", "unset"])
+export type UsageLevel = z.infer<typeof usageLevelSchema>
+
+/** Consumo del mes de Colombia en curso frente a los límites (HU-051). */
+export const usageSchema = z.object({
+  month: z.string(),
+  since: z.string(),
+  warn_pct: z.number(),
+  transfer: z.object({
+    used_gb: z.number(),
+    to_gemini_gb: z.number(),
+    to_app_gb: z.number(),
+    limit_gb: z.number(),
+    pct: z.number().nullable(),
+    level: usageLevelSchema,
+  }),
+  live: z.object({
+    minutes: z.number(),
+    sessions: z.number().int(),
+    limit_minutes: z.number(),
+    pct: z.number().nullable(),
+    level: usageLevelSchema,
+  }),
+  last_failure: z.enum(["billing", "quota"]).nullable(),
+  limits: usageLimitsSchema,
+})
+export type Usage = z.infer<typeof usageSchema>
+
+/** Resultado de probar la conexión con Gemini desde el backend. */
+export const geminiCheckSchema = z.object({
+  status: z.enum(["ok", "billing", "quota", "error"]),
+  detail: z.string(),
+  model: z.string(),
+})
+export type GeminiCheck = z.infer<typeof geminiCheckSchema>
 
 export const deviceStatusSchema = z.enum(["pending", "approved", "disabled"])
 export type DeviceStatus = z.infer<typeof deviceStatusSchema>
