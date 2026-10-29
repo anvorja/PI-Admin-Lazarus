@@ -18,6 +18,7 @@ import {
   type DeviceSession,
   type DeviceUpdate,
   type FieldNote,
+  type NoteReview,
   type GeminiCheck,
   type Metrics,
   type RouteProfile,
@@ -97,6 +98,18 @@ export async function downloadDeviceLogs(id: number): Promise<void> {
 /** Notas de campo del teléfono, para curar rutas. */
 export function fetchDeviceNotes(id: number): Promise<FieldNote[]> {
   return requestJson(`/devices/${id}/notes`, fieldNotesSchema)
+}
+
+/** Marca una nota como aplicada al perfil, descartada o de nuevo pendiente (HU-050). */
+export async function reviewDeviceNote(
+  id: number,
+  note: FieldNote,
+  status: NoteReview
+): Promise<void> {
+  await request(`/devices/${id}/notes/review`, {
+    method: "PUT",
+    body: JSON.stringify({ at: note.at, text: note.text, status }),
+  })
 }
 
 /** Recorrido GPS de un día del teléfono (el más reciente sin `day`). */

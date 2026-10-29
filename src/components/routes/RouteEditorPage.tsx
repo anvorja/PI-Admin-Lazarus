@@ -44,7 +44,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useDevices } from "@/hooks/useDevices"
-import { useDeviceNotes, useDeviceTrack } from "@/hooks/useFieldData"
+import {
+  useDeviceNotes,
+  useDeviceTrack,
+  useReviewNote,
+} from "@/hooks/useFieldData"
 import {
   bestInsertIndex,
   newPoint,
@@ -155,6 +159,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
   const [showTrack, setShowTrack] = useState(true)
   const [focusedNote, setFocusedNote] = useState<PositionedNote | null>(null)
   const notes = useDeviceNotes(deviceId)
+  const review = useReviewNote(deviceId)
   const track = useDeviceTrack(deviceId, day)
   const activeDay = day ?? track.data?.day ?? undefined
   const dayNotes = useMemo(
@@ -165,6 +170,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
     [notes.data, activeDay]
   )
   const mapNotes = useMemo(() => dayNotes.filter(hasPosition), [dayNotes])
+  const pendingNotes = dayNotes.filter((n) => n.review === "pending").length
 
   const desktop = useDesktop()
   const [guideOpen, setGuideOpen] = useState(() => isNew && !guideWasClosed())
@@ -511,7 +517,7 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
                 ["recorrido", "Recorrido"],
                 [
                   "notas",
-                  `Notas de campo${dayNotes.length ? ` (${dayNotes.length})` : ""}`,
+                  `Notas de campo${pendingNotes ? ` (${pendingNotes})` : ""}`,
                 ],
               ] as const
             ).map(([value, label]) => (
@@ -561,6 +567,21 @@ function Editor({ initial, isNew }: { initial: RouteProfile; isNew: boolean }) {
                 onFocus={setFocusedNote}
                 selected={selected}
                 onAction={noteAction}
+                points={profile.points}
+                slug={profile.slug}
+                onSelectPoint={(i) => {
+                  setSelected(i)
+                  setTab("recorrido")
+                }}
+                onReview={(note, status) =>
+                  review.mutate(
+                    { note, status },
+                    {
+                      onError: (e) =>
+                        toast.error(`No se pudo marcar la nota: ${e.message}`),
+                    }
+                  )
+                }
               />
             )}
           </div>
