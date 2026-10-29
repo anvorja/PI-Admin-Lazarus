@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { fetchSettings, updateSettings } from "@/lib/api/admin"
-import type { Schedule, ServiceSettings } from "@/lib/api/schemas"
+import type { Schedule, ServiceSettings, UsageLimits } from "@/lib/api/schemas"
 
 export const settingsKey = ["settings"] as const
 
@@ -17,10 +17,15 @@ export function useServiceSettings() {
 export function useUpdateSettings() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: (body: { service_open?: boolean; schedule?: Schedule }) =>
-      updateSettings(body),
+    mutationFn: (body: {
+      service_open?: boolean
+      schedule?: Schedule
+      usage_limits?: UsageLimits
+    }) => updateSettings(body),
     onSuccess: (settings: ServiceSettings) => {
       client.setQueryData(settingsKey, settings)
+      // Los límites cambian los porcentajes del consumo.
+      void client.invalidateQueries({ queryKey: ["usage"] })
     },
   })
 }

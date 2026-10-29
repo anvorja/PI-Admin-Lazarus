@@ -6,21 +6,27 @@ import {
   deviceSessionsSchema,
   devicesSchema,
   fieldNotesSchema,
+  geminiCheckSchema,
   metricsSchema,
   routeProfileSchema,
   routeProfilesSchema,
   settingsSchema,
   trackSchema,
+  usageSchema,
   type Device,
   type DeviceLogs,
   type DeviceSession,
   type DeviceUpdate,
   type FieldNote,
+  type NoteReview,
+  type GeminiCheck,
   type Metrics,
   type RouteProfile,
   type Schedule,
   type ServiceSettings,
   type Track,
+  type Usage,
+  type UsageLimits,
 } from "./schemas"
 
 export function fetchSettings(): Promise<ServiceSettings> {
@@ -30,6 +36,7 @@ export function fetchSettings(): Promise<ServiceSettings> {
 export function updateSettings(body: {
   service_open?: boolean
   schedule?: Schedule
+  usage_limits?: UsageLimits
 }): Promise<ServiceSettings> {
   return requestJson("/settings", settingsSchema, {
     method: "PUT",
@@ -93,6 +100,18 @@ export function fetchDeviceNotes(id: number): Promise<FieldNote[]> {
   return requestJson(`/devices/${id}/notes`, fieldNotesSchema)
 }
 
+/** Marca una nota como aplicada al perfil, descartada o de nuevo pendiente (HU-050). */
+export async function reviewDeviceNote(
+  id: number,
+  note: FieldNote,
+  status: NoteReview
+): Promise<void> {
+  await request(`/devices/${id}/notes/review`, {
+    method: "PUT",
+    body: JSON.stringify({ at: note.at, text: note.text, status }),
+  })
+}
+
 /** Recorrido GPS de un día del teléfono (el más reciente sin `day`). */
 export function fetchDeviceTrack(id: number, day?: string): Promise<Track> {
   const query = day ? `?day=${encodeURIComponent(day)}` : ""
@@ -119,4 +138,14 @@ export async function deleteRoute(slug: string): Promise<void> {
 /** CPU, RAM, sesiones y tráfico del backend en las últimas `hours` horas. */
 export function fetchMetrics(hours: number): Promise<Metrics> {
   return requestJson(`/metrics?hours=${hours}`, metricsSchema)
+}
+
+/** Consumo del mes frente a los límites y la última falla de Gemini (HU-051). */
+export function fetchUsage(): Promise<Usage> {
+  return requestJson("/usage", usageSchema)
+}
+
+/** Prueba ya la conexión con Gemini desde el backend, sin gastar minutos. */
+export function checkGemini(): Promise<GeminiCheck> {
+  return requestJson("/usage/check", geminiCheckSchema, { method: "POST" })
 }
