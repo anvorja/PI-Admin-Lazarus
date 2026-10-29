@@ -177,8 +177,15 @@ export const fieldNoteSchema = z.object({
   accuracy_m: z.number().nullable(),
   reliability: z.string().nullable(),
   heading: z.number().nullable(),
+  /** Ruta activa al dictarla y el punto al que iba, desde 1 (HU-050). Las notas
+   * de versiones anteriores de la app no los traen. */
+  route: z.string().nullable().default(null),
+  point: z.number().int().nullable().default(null),
+  point_name: z.string().nullable().default(null),
+  review: z.enum(["pending", "applied", "dismissed"]).default("pending"),
 })
 export type FieldNote = z.infer<typeof fieldNoteSchema>
+export type NoteReview = FieldNote["review"]
 export const fieldNotesSchema = z.array(fieldNoteSchema)
 
 /** Recorrido GPS de un día del teléfono, en hora de Colombia. */
