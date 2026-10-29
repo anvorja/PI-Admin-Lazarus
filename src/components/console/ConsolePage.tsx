@@ -3,6 +3,7 @@ import { getRouteApi } from "@tanstack/react-router"
 import { AppHeader } from "@/components/console/AppHeader"
 import { CapacitySection } from "@/components/console/CapacitySection"
 import { RoutesSection } from "@/components/console/RoutesSection"
+import { UsageSection } from "@/components/console/UsageSection"
 import {
   ScheduleSection,
   ServicePanel,
@@ -28,7 +29,8 @@ export function ConsolePage() {
       <AppHeader />
       {/* Dos columnas independientes en escritorio, para que la lista corta de
           teléfonos no deje un hueco. En el teléfono es una sola columna con lo
-          que más se mira arriba: servicio, teléfonos, capacidad, rutas y horario. */}
+          que más se mira arriba: servicio, consumo, teléfonos, capacidad, rutas
+          y horario. */}
       <main className="mx-auto flex max-w-[1400px] flex-col gap-6 px-4 py-6 sm:py-8 lg:grid lg:grid-cols-[400px_minmax(0,1fr)] lg:items-start lg:gap-10 lg:px-8 lg:py-10">
         <h1 className="sr-only">Consola del piloto</h1>
         <div className="contents lg:flex lg:flex-col lg:gap-6">
@@ -39,20 +41,26 @@ export function ConsolePage() {
             <ServicePanel devices={devices.data} />
           </section>
           <section
+            aria-label="Consumo del mes"
+            className="order-2 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+          >
+            <UsageSection />
+          </section>
+          <section
             aria-label="Rutas"
-            className="order-4 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+            className="order-5 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
           >
             <RoutesSection />
           </section>
           <section
             aria-label="Horario"
-            className="order-5 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+            className="order-6 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
           >
             <ScheduleSection />
           </section>
         </div>
         <div className="contents lg:flex lg:min-w-0 lg:flex-col lg:gap-10">
-          <div className="order-2 min-w-0 lg:order-none">
+          <div className="order-3 min-w-0 lg:order-none">
             <DeviceList
               devices={devices.data}
               loading={devices.isPending}
@@ -63,7 +71,7 @@ export function ConsolePage() {
           </div>
           <section
             aria-label="Capacidad"
-            className="@container order-3 min-w-0 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
+            className="@container order-4 min-w-0 rounded-lg border bg-card/70 p-6 sm:p-8 lg:order-none"
           >
             <CapacitySection />
           </section>
