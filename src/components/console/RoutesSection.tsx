@@ -58,15 +58,30 @@ async function readProfile(file: File): Promise<RouteProfile> {
   return result.data
 }
 
-/** Perfiles de ruta curados (HU-022): se cargan desde un .json y se guardan
- * en el servidor, nunca en un repositorio, porque llevan coordenadas. */
+const isJson = (file: File) =>
+  file.type === "application/json" || file.name.toLowerCase().endsWith(".json")
+
+/** Solo reaccionan al arrastre de archivos, no al de texto o enlaces. */
+const hasFiles = (event: React.DragEvent) =>
+  event.dataTransfer.types.includes("Files")
+
+/** Perfiles de ruta curados (HU-022): se cargan desde un .json, con el botón o
+ * arrastrándolo a la sección, y se guardan en el servidor. */
 export function RoutesSection() {
   const routes = useRoutes()
   const save = useSaveRoute()
   const input = useRef<HTMLInputElement>(null)
+  // dragenter y dragleave llegan también de los hijos: se cuentan para saber
+  // cuándo el archivo salió de verdad de la sección.
+  const depth = useRef(0)
+  const [dragging, setDragging] = useState(false)
 
-  async function upload(files: FileList | null) {
+  async function upload(files: FileList | File[] | null) {
     for (const file of Array.from(files ?? [])) {
+      if (!isJson(file)) {
+        toast.error(`${file.name}: solo se cargan archivos .json`)
+        continue
+      }
       try {
         const profile = await readProfile(file)
         const replaced = routes.data?.some((r) => r.slug === profile.slug)
@@ -82,7 +97,43 @@ export function RoutesSection() {
   }
 
   return (
-    <div>
+    <div
+      className="relative"
+      onDragEnter={(event) => {
+        if (!hasFiles(event)) return
+        event.preventDefault()
+        depth.current += 1
+        setDragging(true)
+      }}
+      onDragOver={(event) => {
+        if (!hasFiles(event)) return
+        event.preventDefault()
+        event.dataTransfer.dropEffect = save.isPending ? "none" : "copy"
+      }}
+      onDragLeave={(event) => {
+        if (!hasFiles(event)) return
+        depth.current = Math.max(0, depth.current - 1)
+        if (depth.current === 0) setDragging(false)
+      }}
+      onDrop={(event) => {
+        if (!hasFiles(event)) return
+        event.preventDefault()
+        depth.current = 0
+        setDragging(false)
+        if (!save.isPending) void upload(event.dataTransfer.files)
+      }}
+    >
+      {dragging && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-3 z-10 grid place-items-center rounded-lg border-2 border-dashed border-signal/70 bg-card/90 sm:-inset-4"
+        >
+          <span className="flex items-center gap-2 text-sm font-medium">
+            <Upload className="size-4 text-signal" />
+            Suelta los .json para cargarlos
+          </span>
+        </div>
+      )}
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Route className="size-5 shrink-0 text-muted-foreground" />
@@ -114,8 +165,8 @@ export function RoutesSection() {
       </div>
 
       <p className="mt-2 text-sm text-muted-foreground">
-        Perfiles con los que la app guía punto por punto. Llevan coordenadas:
-        solo se guardan en el servidor.
+        Perfiles con los que la app guía punto por punto. Cárgalos con el botón
+        o arrastra los .json a esta sección.
       </p>
 
       <div className="mt-5">
@@ -127,8 +178,8 @@ export function RoutesSection() {
           </p>
         ) : routes.data.length === 0 ? (
           <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-            Aún no hay rutas. Carga el .json de la ida y el de la vuelta: son
-            perfiles distintos.
+            Aún no hay rutas. Carga o arrastra aquí el .json de la ida y el de
+            la vuelta: son perfiles distintos.
           </p>
         ) : (
           <ul className="divide-y rounded-lg border">
