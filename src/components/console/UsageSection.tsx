@@ -1,4 +1,11 @@
-import { CircleAlert, CircleCheck, Loader2, Wallet } from "lucide-react"
+import {
+  ChevronDown,
+  CircleAlert,
+  CircleCheck,
+  Loader2,
+  Wallet,
+} from "lucide-react"
+import { Collapsible } from "radix-ui"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -145,6 +152,22 @@ function alerts(usage: Usage): string[] {
   return out
 }
 
+function Warnings({ warnings }: { warnings: string[] }) {
+  return (
+    <ul
+      role="alert"
+      className="mt-4 space-y-1.5 rounded-md border border-wait/40 bg-wait-soft p-3 text-sm first:mt-0"
+    >
+      {warnings.map((text) => (
+        <li key={text} className="flex gap-2">
+          <CircleAlert className="mt-0.5 size-4 shrink-0 text-wait" />
+          <span>{text}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 const CHECK_TEXT: Record<GeminiCheck["status"], string> = {
   ok: "Gemini responde: la clave funciona y hay saldo.",
   billing: "Gemini rechaza la conexión por saldo o facturación.",
@@ -243,35 +266,68 @@ function LimitsEditor({ usage, onDone }: { usage: Usage; onDone: () => void }) {
   )
 }
 
+const USAGE_OPEN_KEY = "lazarus-panel-consumo-abierto"
+
+/** Abierta por defecto: es parte de la lista de antes de salir. */
+function readUsageOpen(): boolean {
+  try {
+    return localStorage.getItem(USAGE_OPEN_KEY) !== "0"
+  } catch {
+    return true
+  }
+}
+
+/** Lo que se ve con la sección plegada: cuánto va de cada límite. */
+function usageSummary(usage: Usage): string {
+  const part = (label: string, pct: number | null) =>
+    pct === null ? `${label} sin límite` : `${label} ${num(pct)} %`
+  return `${part("Transferencia", usage.transfer.pct)} · ${part("Live", usage.live.pct)}`
+}
+
 /**
  * Consumo del mes (HU-051): transferencia del backend frente al plan de Render
  * y minutos de Live frente al presupuesto, con aviso desde el % definido. El
  * 28-oct Render suspendió el servicio por la transferencia y el 29-oct Gemini
  * rechazó las sesiones por facturación: esta sección los avisa antes de salir.
+ * Se puede plegar como el horario; plegada muestra el nivel de cada consumo, y
+ * las alertas y el resultado de "Probar Gemini" se ven igual.
  */
 export function UsageSection() {
   const usage = useUsage()
   const check = useCheckGemini()
   const [editing, setEditing] = useState(false)
   const [checkedAt, setCheckedAt] = useState<Date | null>(null)
+  const [open, setOpen] = useState(readUsageOpen)
+
+  const toggle = (next: boolean) => {
+    setOpen(next)
+    try {
+      localStorage.setItem(USAGE_OPEN_KEY, next ? "1" : "0")
+    } catch {
+      // Sin almacenamiento solo se pierde la preferencia.
+    }
+  }
 
   const result = check.data
   const warnings = usage.data ? alerts(usage.data) : []
 
   return (
-    <div>
+    <Collapsible.Root open={open} onOpenChange={toggle}>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="flex gap-3">
+        <Collapsible.Trigger className="group flex min-w-0 flex-1 items-start gap-3 rounded-md text-left outline-offset-4">
           <Wallet className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
-          <div>
-            <h2 className="text-base font-medium">Consumo del mes</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
+          <span className="min-w-0 flex-1">
+            <span className="block text-base font-medium">Consumo del mes</span>
+            <span className="mt-1 block text-sm text-muted-foreground">
               {usage.data
-                ? `${monthLabel(usage.data.month)}, hora de Colombia.`
+                ? open
+                  ? `${monthLabel(usage.data.month)}, hora de Colombia.`
+                  : usageSummary(usage.data)
                 : "Transferencia del backend y minutos de Live."}
-            </p>
-          </div>
-        </div>
+            </span>
+          </span>
+          <ChevronDown className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        </Collapsible.Trigger>
         <Button
           size="sm"
           variant="outline"
@@ -320,7 +376,9 @@ export function UsageSection() {
         </p>
       )}
 
-      <div className="mt-5">
+      {!open && warnings.length > 0 && <Warnings warnings={warnings} />}
+
+      <Collapsible.Content className="mt-5">
         {usage.isPending ? (
           <Skeleton className="h-28 w-full" />
         ) : usage.error && !usage.data ? (
@@ -329,19 +387,7 @@ export function UsageSection() {
           </p>
         ) : (
           <div className="space-y-5">
-            {warnings.length > 0 && (
-              <ul
-                role="alert"
-                className="space-y-1.5 rounded-md border border-wait/40 bg-wait-soft p-3 text-sm"
-              >
-                {warnings.map((text) => (
-                  <li key={text} className="flex gap-2">
-                    <CircleAlert className="mt-0.5 size-4 shrink-0 text-wait" />
-                    <span>{text}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {warnings.length > 0 && <Warnings warnings={warnings} />}
             <Meter
               label="Transferencia del backend"
               used={`${num(usage.data.transfer.used_gb, 2)} GB`}
@@ -391,7 +437,7 @@ export function UsageSection() {
             )}
           </div>
         )}
-      </div>
-    </div>
+      </Collapsible.Content>
+    </Collapsible.Root>
   )
 }
